@@ -1,19 +1,18 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
-        # Name: Mohini T and Vansh R
+        # Name: Prachi and Harshita
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
-        # Version: V 1.0 (11 July 2024)
-            # Developers: Mohini T and Vansh R
+        # Version: V 1.0 (17 September 2024)
+            # Developers: Prachi and Harshita
             # Unit test: Pass
             # Integration test: Pass
      
     # Description: This code snippet contains utility functions to evaluate a model using test, validation,
-    # and super validation data stored in a Redis database.
+    # and super validation data stored in a MongoDB database.
         # PostgreSQL: Yes
-        # Cassandra: Yes
 
 # CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -26,20 +25,18 @@
 import pandas as pd                                             # Importing pandas for data manipulation
 from sklearn.preprocessing import StandardScaler, LabelEncoder  # Importing tools for data preprocessing
 import db_utils                                                 # Importing utility functions for database operations
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def preprocess_postgres_data(data):
-    # Separate customer_id
-    customer_id = data['customer_id']
+    # Separate transaction_id
+    transaction_id = data['transaction_id']
 
-    # Define columns to be scaled, excluding 'customer_id'
+    # Define columns to be scaled, excluding 'transaction_id'
     numerical_cols = [
-        'annual_fee',
-        'account_age',
-        'number_of_logins',
-        'total_spent',
-        'num_tickets_raised',
-        'avg_response_time',
-        'satisfaction_score'
+        'transaction_amount',
+        'cardholder_age',
+        'account_balance',
+        'calander_income'
     ]
 
     # Create a temporary DataFrame for scaling
@@ -54,19 +51,44 @@ def preprocess_postgres_data(data):
     for col in categorical_cols:
         data[col] = encoder.fit_transform(data[col]) # Encode categorical columns
 
-    # Rejoin customer_id and scaled numerical columns
+    # Rejoin transaction_id and scaled numerical columns
     data = data.drop(columns=numerical_cols) # Drop original numerical columns
     data = pd.concat([data, temp_data], axis=1) # Concatenate scaled numerical columns back
-    data['customer_id'] = customer_id # Reassign customer_id
+    data['transaction_id'] = transaction_id # Reassign transaction_id
 
+    #Convert to datetime format
+    data['transaction_date'] = pd.to_datetime(data['transaction_date'], format='%d-%m-%Y')
+    
+    # Extract components
+    data['transaction_year'] = data['transaction_date'].dt.year
+    data['transaction_month'] = data['transaction_date'].dt.month
+    data['transaction_day'] = data['transaction_date'].dt.day
+
+    # Drop the transaction_date column
+    data = data.drop('transaction_date', axis=1)
+
+    # Convert text descriptions into numerical features
+    # Initialize the TF-IDF Vectorizer
+    tfidf = TfidfVectorizer(max_features=100)
+
+    # Transform the transaction_description column
+    description_features = tfidf.fit_transform(data['transaction_description'])
+
+    # Convert to dataframe
+    description_data = pd.DataFrame(description_features.toarray(), columns=tfidf.get_feature_names_out())
+
+    # Rejoin the data and drop original column
+    data = pd.concat([data, description_data], axis=1)
+    data = data.drop('transaction_description', axis=1, inplace=True)
+    
     return data
 
 
-def load_and_preprocess_data(postgres_username, postgres_password, postgres_host, postgres_port, postgres_database, cassandra_host, cassandra_port, cassandra_keyspace):
+def load_and_preprocess_data(postgres_username, postgres_password, postgres_host, postgres_port, postgres_database):
 
     # Load data from PostgreSQL
     postgres_engine = db_utils.connect_postgresql(postgres_username, postgres_password, postgres_host, postgres_port, postgres_database)
-    data_postgres = pd.read_sql_table('customer_data', postgres_engine) # Load PostgreSQL data
+    data_postgres = pd.read_sql_table('transaction_data', postgres_engine) # Load PostgreSQL data
 
     # Preprocess data
     data_postgres_processed = preprocess_postgres_data(data_postgres) # Preprocess PostgreSQL data
