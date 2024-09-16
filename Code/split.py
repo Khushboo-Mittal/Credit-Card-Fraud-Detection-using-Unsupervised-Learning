@@ -30,10 +30,10 @@ import pickle                                           # For serializing and de
 # Importing necessary .py files and functions
 from preprocess import load_and_preprocess_data # For preprocessing data
 
-def connect_to_redis(host, port, db_name):
-    # Connect to Redis
+def connect_to_mongodb(host, port, db_name):
+    # Connect to MongoDB
     client = MongoClient(host=host, port=port)
-    db = client[db_name]
+    db = client[transaction_db]
     return db
 
 def merge_data(data_postgres_processed, data_cassandra_processed):
