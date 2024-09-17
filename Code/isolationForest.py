@@ -8,17 +8,13 @@ def read_training_data(db):
     # Access the collections
     x_train_collection = db['x_train']
     x_test_collection = db['x_test']
-    y_train_collection = db['y_train']
-    y_test_collection = db['y_test']
 
     # Load data into Pandas DataFrames
     x_train_df = pd.DataFrame(list(x_train_collection.find()))
     x_test_df = pd.DataFrame(list(x_test_collection.find()))
-    y_train_df = pd.DataFrame(list(y_train_collection.find()))
-    y_test_df = pd.DataFrame(list(y_test_collection.find()))
 
 
-def perform_hyperparameter_tuning(X_train, y_train):
+def perform_hyperparameter_tuning(X_train):
     # Define the grid of hyperparameters to search over
     param_grid = {
         'n_estimators': [100, 200, 300],  # Number of base estimators in ensemble
@@ -34,10 +30,10 @@ def perform_hyperparameter_tuning(X_train, y_train):
     
     # Initialize a GridSearchCV to search for the best hyperparameters
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, 
-                               cv=3, n_jobs=-1, verbose=2, scoring='accuracy')
+                               cv=3, n_jobs=-1, verbose=2)
     
     # Fit the GridSearchCV to the training data
-    grid_search.fit(X_train, y_train)
+    grid_search.fit(X_train)
     
     # Retrieve the best model with the optimal hyperparameters
     best_model = grid_search.best_estimator_

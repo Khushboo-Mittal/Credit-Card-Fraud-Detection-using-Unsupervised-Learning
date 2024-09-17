@@ -26,7 +26,7 @@
 from pymongo import MongoClient # For connecting to MongoDB database
 import pickle # For loading the model from a pickle file
 import pandas as pd # For data manipulation
-from sklearn.metrics import accuracy_score, classification_report, roc_auc_score, confusion_matrix # For model evaluation
+from sklearn.metrics import make_scorer, silhouette_score, calinski_harabasz_score, davies_bouldin_score # For model evaluation
 
 # Load test, validation, and super validation data from MongoDB
 def load_data_from_mongodb(collection_name,db):
