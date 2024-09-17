@@ -1,12 +1,12 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
-        # Name: Mohini T and Vansh R
+        # Name: Prachi and Harshita
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
-        # Version: V 1.0 (11 July 2024)
-            # Developers: Mohini T and Vansh R
+        # Version: V 1.0 (17 September 2024)
+            # Developers: Prachi and Harshita
             # Unit test: Pass
             # Integration test: Pass
      
@@ -57,7 +57,6 @@ if "postgres_port" not in st.session_state:
     
 if "postgres_database" not in st.session_state:
     st.session_state.postgres_database = "churn_prediction"
-
 
 
 # MongoDB
@@ -117,9 +116,9 @@ with tab1:
             st.write("Enter MongoDB Configuration Details:")
             st.write(" ")
             
-            st.session_state.mongoDb_host = st.text_input("MongoDB Host", st.session_state.redis_host)
-            st.session_state.mongoDb_port = st.text_input("Port", st.session_state.redis_port)
-            st.session_state.mongoDb_db = st.text_input("DB", st.session_state.redis_db)
+            st.session_state.mongodb_host = st.text_input("MongoDB Host", st.session_state.mongodb_host)
+            st.session_state.mongodb_port = st.text_input("Port", st.session_state.mongodb_port)
+            st.session_state.mongodb_db = st.text_input("DB", st.session_state.mongodb_db)
         
         # Tab for Paths Configuration
         with tab_paths:
@@ -131,8 +130,8 @@ with tab1:
             
             st.session_state.master_data_path = st.text_input("Master Data Path", st.session_state.master_data_path)
             st.session_state.isolation_forest_path = st.text_input("Isolation Forest Model Path", st.session_state.isolation_forest_path)
-            st.session_state.local_outlier_factor_path = st.text_input("Local Outlier Factor Model Path", st.session_state.local_outlier_factor_path)
-            st.session_state.oneclass_svm_path = st.text_input("One-Class SVM Model Path", st.session_state.oneclass_svm_path)
+            # st.session_state.local_outlier_factor_path = st.text_input("Local Outlier Factor Model Path", st.session_state.local_outlier_factor_path)
+            # st.session_state.oneclass_svm_path = st.text_input("One-Class SVM Model Path", st.session_state.oneclass_svm_path)
             
         if st.form_submit_button(label="Save Config", use_container_width=True):
             st.write("Configurations Saved Successfully! ✅")
@@ -153,11 +152,11 @@ with tab2:
             st.write("Data Ingested Successfully! ✅")  # Displaying a success message
             
             st.write("Preprocessing data...")  # Displaying a message for data preprocessing
-            data_postgres_processed= load_and_preprocess_data(st.session_state.postgres_username, st.session_state.postgres_password, st.session_state.postgres_host, st.session_state.postgres_port, st.session_state.postgres_database, st.session_state.cassandra_host, st.session_state.cassandra_port, st.session_state.cassandra_keyspace)  # Calling the load_and_preprocess_data function
+            data_postgres_processed= load_and_preprocess_data(st.session_state.postgres_username, st.session_state.postgres_password, st.session_state.postgres_host, st.session_state.postgres_port, st.session_state.postgres_database)  # Calling the load_and_preprocess_data function
             st.write("Data Preprocessed Successfully! ✅")  # Displaying a success message
             
             st.write("Splitting data into train, test, validation, and super validation sets...")  # Displaying a message for data splitting
-            split_data(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, data_postgres_processed) # Calling the split_data function
+            split_data(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, data_postgres_processed) # Calling the split_data function
             st.write("Data Split Successfully! ✅")  # Displaying a success message
             
             st.write("Training model...")  # Displaying a message for model training
@@ -165,7 +164,7 @@ with tab2:
             # Choosing the model to train based on the user's selection
             if selected_model == "IsolationForest":
                 # Calling the train_model function and storing the training accuracy and best hyperparameters
-                training_accuracy, best_params = train_model_isolationForest(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.isolation_forest_path)
+                training_accuracy, best_params = train_model_isolationForest(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.isolation_forest_path)
             # elif selected_model == "LocalOutlier factor":
             #     training_accuracy, best_params = train_model_localOutlierFactor(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.local_outlier_factor_path)
             # elif selected_model == "One-class SVM":
