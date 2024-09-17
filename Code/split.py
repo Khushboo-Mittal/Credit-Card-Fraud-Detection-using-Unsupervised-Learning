@@ -67,10 +67,10 @@ def store_to_mongo(data, db, collection_name): # Store data into MongoDB
     
 def save_split_data(db, X_train, X_test, X_val, X_superval):
     # Store to MongoDB
-    store_to_mongo(pickle.dumps(X_train),db, 'training_data')
-    store_to_mongo(pickle.dumps(X_test),db,'testing_data')
-    store_to_mongo(pickle.dumps(X_val),db,'validation_data')
-    store_to_mongo(pickle.dumps(X_superval) ,db,'supervalidation_data')
+    store_to_mongo(pickle.dumps(X_train),db, 'x_train')
+    store_to_mongo(pickle.dumps(X_test),db,'x_test')
+    store_to_mongo(pickle.dumps(X_val),db,'x_val')
+    store_to_mongo(pickle.dumps(X_superval) ,db,'x_superval')
 
     # Save the split data to Redis
     # r.set('X_train', pickle.dumps(X_train))
