@@ -26,55 +26,64 @@
 import pandas as pd                                             # For data manipulation
 import pickle                                                   # For loading the model from a pickle file
 from sklearn.preprocessing import StandardScaler, LabelEncoder  # For preprocessing input data
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-def preprocess_input_data(signup_date, last_login, annual_fee, subscription_type, payment_method,
-                          account_age, number_of_logins, total_spent, num_tickets_raised, avg_response_time,
-                          satisfaction_score, country, device, usage_hours_per_month):
+def preprocess_input_data(transaction_date, transaction_amount, merchant_category, card_type, transaction_location,
+                          cardholder_age, cardholder_gender, transaction_description, account_balance, calander_income):
     # Prepare input data as a DataFrame
     data = pd.DataFrame({
-        'signup_date': [signup_date],  # Signup date
-        'last_login': [last_login],  # Last login date
-        'annual_fee': [annual_fee],  # Annual fee
-        'subscription_type': [subscription_type],  # Subscription type
-        'payment_method': [payment_method],  # Payment method
-        'account_age': [account_age],  # Account age
-        'number_of_logins': [number_of_logins],  # Number of logins
-        'total_spent': [total_spent],  # Total amount spent
-        'num_tickets_raised': [num_tickets_raised],  # Number of tickets raised
-        'avg_response_time': [avg_response_time],  # Average response time
-        'satisfaction_score': [satisfaction_score],  # Satisfaction score
-        'country': [country],  # Country
-        'device': [device],  # Device type
-        'usage_hours_per_month': [usage_hours_per_month]  # Usage hours per month
+        'transaction_date': [transaction_date],  # transaction_date
+        'transaction_amount': [transaction_amount],  # transaction_amount
+        'merchant_category': [merchant_category],  # merchant_category
+        'card_type': [card_type],  # card_type
+        'transaction_location': [transaction_location],  # transaction_location
+        'cardholder_age': [cardholder_age],  # cardholder_age
+        'cardholder_gender': [cardholder_gender],  # cardholder_gender
+        'transaction_description': [transaction_description],  # transaction_description
+        'account_balance': [account_balance],  # account_balance
+        'calander_income': [calander_income],  # calander_income
     })
     
     # Preprocess categorical and numerical columns
     numerical_cols = [
-        'annual_fee', 'account_age', 'number_of_logins', 'total_spent',
-        'num_tickets_raised', 'avg_response_time', 'satisfaction_score',
-        'last_login_year', 'last_login_month', 'last_login_day',
-        'signup_year', 'signup_month', 'signup_day', 'usage_hours_per_month'
+        'transaction_amount', 'cardholder_age', 'account_balance', 'calander_income', 'transaction_year',
+        'transaction_month', 'transaction_day'
     ]
     
     categorical_cols = [
-        'subscription_type', 'payment_method', 'country', 'device'
+        'merchant_category', 'card_type', 'transaction_location', 'cardholder_gender', 
     ]
     
     # Handle date columns
-    data['signup_date'] = pd.to_datetime(data['signup_date'])  # Convert signup date to datetime
-    data['last_login'] = pd.to_datetime(data['last_login'])  # Convert last login date to datetime
+    data['transaction_date'] = pd.to_datetime(data['signup_date'])  # Convert signup date to datetime
     
     # Extract features from date columns
-    data['signup_year'] = data['signup_date'].dt.year  # Extract year from signup date
-    data['signup_month'] = data['signup_date'].dt.month  # Extract month from signup date
-    data['signup_day'] = data['signup_date'].dt.day  # Extract day from signup date
-    data['last_login_year'] = data['last_login'].dt.year  # Extract year from last login date
-    data['last_login_month'] = data['last_login'].dt.month  # Extract month from last login date
-    data['last_login_day'] = data['last_login'].dt.day  # Extract day from last login date
+    data['transaction_year'] = data['transaction_date'].dt.year  # Extract year from transaction date
+    data['transaction_month'] = data['transaction_date'].dt.month  # Extract month from transaction date
+    data['transaction_day'] = data['transaction_date'].dt.day  # Extract day from transaction date
     
     # Drop original date columns
-    data = data.drop(columns=['signup_date', 'last_login'])
+    data = data.drop(columns=['transaction_date'])
+
+    # Convert text descriptions into numerical features
+    # Initialize the TF-IDF Vectorizer
+    tfidf = TfidfVectorizer(max_features=100)
+
+    # Transform the transaction_description column
+    description_features = tfidf.fit_transform(data['transaction_description'])
     
+    # Convert to dataframe
+    description_data = pd.DataFrame(description_features.toarray(), columns=tfidf.get_feature_names_out())
+
+    # Rejoin the data and drop original column
+    data = pd.concat([data, description_data], axis=1)
+    data = data.drop('transaction_description', axis=1, inplace=True)
+
+    #Scale description feature values
+    scaler = StandardScaler()
+    for col in description_features:
+        data[col] = scaler.fit_transform(data[col].values.reshape(-1, 1))
+                              
     # Ensure numerical columns are of correct type
     for col in numerical_cols:
         data[col] = pd.to_numeric(data[col], errors='coerce')  # Convert to numeric, coerce errors to NaN
@@ -91,28 +100,26 @@ def preprocess_input_data(signup_date, last_login, annual_fee, subscription_type
     
     return data
 
-def predict_output(signup_date, last_login, annual_fee, subscription_type, payment_method,
-                   account_age, number_of_logins, total_spent, num_tickets_raised, avg_response_time,
-                   satisfaction_score, country, device, usage_hours_per_month, model_path):
+def predict_output(transaction_date, transaction_amount, merchant_category, card_type, transaction_location,
+                          cardholder_age, cardholder_gender, transaction_description, account_balance, calander_income, model_path):
     # Load the trained model
     with open(model_path, "rb") as f:
         model = pickle.load(f)
     
     # Preprocess input data
-    data = preprocess_input_data(signup_date, last_login, annual_fee, subscription_type, payment_method,
-                                 account_age, number_of_logins, total_spent, num_tickets_raised, avg_response_time,
-                                 satisfaction_score, country, device, usage_hours_per_month)
+    data = preprocess_input_data(transaction_date, transaction_amount, merchant_category, card_type, transaction_location,
+                          cardholder_age, cardholder_gender, transaction_description, account_balance, calander_income)
     
     # Ensure column order matches model's expectations
-    X_columns = [
-        'subscription_type', 'payment_method', 'country', 'device',
-        'annual_fee', 'account_age', 'number_of_logins', 'total_spent',
-        'num_tickets_raised', 'avg_response_time', 'satisfaction_score',
-        'last_login_year', 'last_login_month', 'last_login_day',
-        'signup_year', 'signup_month', 'signup_day', 'usage_hours_per_month'
-    ]
+    # X_columns = [
+    #     'subscription_type', 'payment_method', 'country', 'device',
+    #     'annual_fee', 'account_age', 'number_of_logins', 'total_spent',
+    #     'num_tickets_raised', 'avg_response_time', 'satisfaction_score',
+    #     'last_login_year', 'last_login_month', 'last_login_day',
+    #     'signup_year', 'signup_month', 'signup_day', 'usage_hours_per_month'
+    # ]
     
-    X = data[X_columns]  # Arrange columns in the correct order
+    # X = data[X_columns]  # Arrange columns in the correct order
     
     # Predict output
     try:
