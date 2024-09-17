@@ -60,27 +60,27 @@ if "postgres_database" not in st.session_state:
 
 
 # MongoDB
-if "mongoDb_host" not in st.session_state:
-    st.session_state.mongoDb_host = "localhost"
+if "mongodb_host" not in st.session_state:
+    st.session_state.mongodb_host = "localhost"
     
-if "mongoDb_port" not in st.session_state:
-    st.session_state.mongoDb_port = " 27017"
+if "mongodb_port" not in st.session_state:
+    st.session_state.mongodb_port = " 27017"
     
-if "mongoDb_db" not in st.session_state:
-    st.session_state.mongoDb_db = "1"
+if "mongodb_db" not in st.session_state:
+    st.session_state.mongodb_db = "1"
 
 # Paths
 if "master_data_path" not in st.session_state:
     st.session_state.master_data_path = "Data/Master/Mock_data.csv"
     
 if "isolation_forest_path" not in st.session_state:
-    st.session_state.bagging_model_path = "isolation_forest_model.pkl"
+    st.session_state.isolation_forest_model_path = "isolation_forest_model.pkl"
     
 if "local_outlier_factor_path" not in st.session_state:
-    st.session_state.voting_model_path = "loacl_outlier_factor_model.pkl"
+    st.session_state.local_outlier_factor_model_path = "local_outlier_factor_model.pkl"
     
 if "oneclass_svm_path" not in st.session_state:
-    st.session_state.stacking_model_path = "oneclass_svm_model.pkl"
+    st.session_state.oneclass_svm_model_path = "oneclass_svm_model.pkl"
 
 # Creating tabs for the web app.
 tab1, tab2, tab3, tab4 = st.tabs(["Model Config","Model Training","Model Evaluation", "Model Prediction"])
@@ -92,7 +92,7 @@ with tab1:
     st.divider()
     
     with st.form(key="Config Form"):
-        tab_pg, tab_cs, tab_mongodb, tab_paths = st.tabs(["PostgreSQL", "MongoDB", "Paths"])
+        tab_pg, tab_mongodb, tab_paths = st.tabs(["PostgreSQL", "MongoDB", "Paths"])
         
         # Tab for PostrgreSQL Configuration
         with tab_pg:
@@ -110,7 +110,7 @@ with tab1:
         
         # Tab for MongoDB Configuration
         with tab_mongodb:
-            st.markdown("<h2 style='text-align: center; color: white;'>Redis Configuration</h2>", unsafe_allow_html=True)
+            st.markdown("<h2 style='text-align: center; color: white;'>MongoDB Configuration</h2>", unsafe_allow_html=True)
             st.write(" ")
             
             st.write("Enter MongoDB Configuration Details:")
@@ -164,7 +164,7 @@ with tab2:
             # Choosing the model to train based on the user's selection
             if selected_model == "IsolationForest":
                 # Calling the train_model function and storing the training accuracy and best hyperparameters
-                training_accuracy, best_params = train_model_isolationForest(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.isolation_forest_path)
+                silhouette_avg, best_params = train_model_isolationForest(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.isolation_forest_path)
             # elif selected_model == "LocalOutlier factor":
             #     training_accuracy, best_params = train_model_localOutlierFactor(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.local_outlier_factor_path)
             # elif selected_model == "One-class SVM":
@@ -172,7 +172,7 @@ with tab2:
             st.write("Model Trained Successfully! ✅")  # Displaying a success message
         
         # Displaying the training accuracy
-        st.success(f"{selected_model} Model Successfully trained with training accuracy: {training_accuracy:.5f}")
+        st.success(f"{selected_model} Model Successfully trained with training accuracy: {silhouette_avg:.5f}")
         st.write(f"Best Hyperparameters")
         st.text(best_params)
 
@@ -187,7 +187,7 @@ with tab3:
     st.divider()
     
     # Get the model test, validation, and super validation metrics
-    isolation_test_accuracy, isolation_test_roc_auc, isolation_test_confusion_matrix, isolation_test_classification_report, isolation_val_accuracy, isolation_val_roc_auc, isolation_val_confusion_matrix, isolation_val_classification_report, isolation_superval_accuracy, isolation_superval_roc_auc, isolation_superval_confusion_matrix, isolation_superval_classification_report = evaluate_model(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.isolation_forest_path)
+    isolation_test_silhouette_avg, isolation_test_dunn_index, isolation_test_db_index, isolation_test_ch_index, isolation_val_silhouette_avg, isolation_val_dunn_index, isolation_val_db_index, isolation_val_ch_index, isolation_superval_silhouette_avg, isolation_superval_dunn_index, isolation_superval_db_index, isolation_superval_ch_index = evaluate_model(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.isolation_forest_path)
     
     # Display model metrics in three columns
     isolation_col1, isolation_col2, isolation_col3 = st.columns(3)
@@ -199,30 +199,38 @@ with tab3:
     # Displaying metrics for test, validation, and super validation sets
     with isolation_col1:
         st.markdown(markdown_top_center("Test Metrics:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(f"Accuracy: {isolation_test_accuracy:.5f}"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {isolation_test_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        st.markdown(markdown_top_center(f"ROC AUC: {isolation_test_roc_auc:.5f}"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"DUNN index: {isolation_test_dunn_index:.5f}"), unsafe_allow_html=True)
         st.write(" ")
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_test_db_index), unsafe_allow_html=True)
         st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(isolation_test_confusion_matrix), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
 
     with isolation_col2:
         st.markdown(markdown_top_center("Validation Metrics:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(f"Accuracy: {isolation_val_accuracy:.5f}"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {isolation_val_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        st.markdown(markdown_top_center(f"ROC AUC: {isolation_val_roc_auc:.5f}"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"DUNN index: {isolation_val_dunn_index:.5f}"), unsafe_allow_html=True)
         st.write(" ")
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_val_db_index), unsafe_allow_html=True)
         st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(isolation_val_confusion_matrix), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
 
     with isolation_col3:
         st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(f"Accuracy: {isolation_superval_accuracy:.5f}"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {isolation_superval_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        st.markdown(markdown_top_center(f"ROC AUC: {isolation_superval_roc_auc:.5f}"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"DUNN index: {isolation_superval_dunn_index:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(isolation_superval_confusion_matrix), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
         
     st.divider()
     
@@ -231,17 +239,17 @@ with tab3:
     st.write(" ")
     
     st.text("Test Classification Report:")
-    st.text(isolation_test_classification_report)
+    st.text(isolation_test_ch_index)
     
     st.divider()
 
     st.text("Validation Classification Report:")
-    st.text(isolation_val_classification_report)
+    st.text(isolation_val_ch_index)
     
     st.divider()
 
     st.text("Super Validation Classification Report:")
-    st.text(isolation_superval_classification_report)
+    st.text(isolation_superval_ch_index)
     
     st.divider()
     
@@ -388,7 +396,7 @@ with tab4:
         
         # Mapping model names to their respective paths
         model_path_mapping = {
-            "IsolationForest": st.session_state.bagging_model_path,
+            "IsolationForest": st.session_state.isolation_forest_path,
             "LocalOutlier factor": st.session_state.local_outlier_factor__path,
             "One-class SVM": st.session_state.oneClass_model_path
         }
