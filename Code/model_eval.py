@@ -27,9 +27,10 @@ from pymongo import MongoClient # For connecting to MongoDB database
 import pickle # For loading the model from a pickle file
 import pandas as pd # For data manipulation
 from sklearn.metrics import make_scorer, silhouette_score, calinski_harabasz_score, davies_bouldin_score # For model evaluation
+import jqmcvi.base as jqmcvi # For model evaluation (Dunn's index) 
 
 # Load test, validation, and super validation data from MongoDB
-def load_data_from_mongodb(collection_name,db):
+def load_data_from_mongodb(db, collection_name):
     # Connect to MongoDB
     collection = db[collection_name]
     data = collection.find_one()  # Retrieve the first document
@@ -37,53 +38,82 @@ def load_data_from_mongodb(collection_name,db):
         return pickle.loads(data['pickled_data'])  # Deserialize the pickled binary data
     return None
 
-def evaluate_test_data(X_test, y_test, model):
+def evaluate_test_data(X_test, model):
     # Predict labels for the test set
-    y_pred_test = model.predict(X_test)
+    pred = model.predict(X_test)
+    
     # Calculate accuracy score for the test set
-    test_accuracy = accuracy_score(y_test, y_pred_test)
-    # Calculate ROC AUC score for the test set
-    if hasattr(model, "predict_proba"):
-        test_roc_auc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
-    else:
-        test_roc_auc = None
-    # Return accuracy, ROC AUC, confusion matrix, and classification report for the test set
-    return test_accuracy, test_roc_auc, confusion_matrix(y_test, y_pred_test), classification_report(y_test, y_pred_test)
+    test_silhouette_avg = silhouette_score(X_test, pred)
+    # Calculate PCA score for the test set
+    # pca = PCA(n_components=2).fit(X_train)
 
-def evaluate_validation_data(X_val, y_val, model):
+    # # Explained variance on validation set
+    # test_explained_variance = pca.explained_variance_ratio_.sum()
+
+    # Calculate dunn's index for test set
+    test_dunn_index = jqmcvi.dunn_fast(X_test, pred)
+
+    # Calculate Davies Bouldin index or DBI
+    test_db_index = davies_bouldin_score(X_test, pred)
+
+    # Calculate Calinski Harabasz Index
+    test_ch_index = calinski_harabasz_score(X_test, pred)
+    
+    return test_silhouette_avg, test_dunn_index, test_db_index, test_ch_index, # test_explained_variance
+
+def evaluate_validation_data(X_val, model):
     # Predict labels for the validation set
-    y_pred_val = model.predict(X_val)
+    val_pred = model.predict(X_val)
+    
     # Calculate accuracy score for the validation set
-    val_accuracy = accuracy_score(y_val, y_pred_val)
-    # Calculate ROC AUC score for the validation set
-    if hasattr(model, "predict_proba"):
-        val_roc_auc = roc_auc_score(y_val, model.predict_proba(X_val)[:, 1])
-    else:
-        val_roc_auc = None
-    # Return accuracy, ROC AUC, confusion matrix, and classification report for the validation set
-    return val_accuracy, val_roc_auc, confusion_matrix(y_val, y_pred_val), classification_report(y_val, y_pred_val)
+    val_silhouette_avg = silhouette_score(X_val, val_pred)
+    # Calculate PCA score for the validation set
+    # pca = PCA(n_components=2).fit(X_train)
+
+    # # Explained variance on validation set
+    # val_explained_variance = pca.explained_variance_ratio_.sum()
+
+    # Calculate dunn's index for validation set
+    val_dunn_index = jqmcvi.dunn_fast(X_val, val_pred)
+
+    # Calculate Davies Bouldin index or DBI for the validation set
+    val_db_index = davies_bouldin_score(X_val, val_pred)
+
+    # Calculate Calinski Harabasz Index for the validation set
+    val_ch_index = calinski_harabasz_score(X_val, val_pred)
+    
+    return val_silhouette_avg, val_dunn_index, val_db_index, val_ch_index, # val_explained_variance
 
 def evaluate_supervalidation_data(X_superval, y_superval, model):
-    # Predict labels for the super validation set
-    y_pred_superval = model.predict(X_superval)
-    # Calculate accuracy score for the super validation set
-    superval_accuracy = accuracy_score(y_superval, y_pred_superval)
-    # Calculate ROC AUC score for the super validation set
-    if hasattr(model, "predict_proba"):
-        superval_roc_auc = roc_auc_score(y_superval, model.predict_proba(X_superval)[:, 1])
-    else:
-        superval_roc_auc = None
-    # Return accuracy, ROC AUC, confusion matrix, and classification report for the super validation set
-    return superval_accuracy, superval_roc_auc, confusion_matrix(y_superval, y_pred_superval), classification_report(y_superval, y_pred_superval)
+    # Predict labels for the supervalidation set
+    superval_pred = model.predict(X_superval)
+    
+    # Calculate accuracy score for the supervalidation set
+    superval_silhouette_avg = silhouette_score(X_superval, superval_pred)
+    # Calculate PCA score for the supervalidation set
+    # pca = PCA(n_components=2).fit(X_train)
 
-def evaluate_model(redis_host, redis_port, redis_db, model_path):
+    # # Explained variance on supervalidation set
+    # superval_explained_variance = pca.explained_variance_ratio_.sum()
 
-    X_test = load_data_from_mongodb('X_test')
-    y_test = load_data_from_mongodb('y_test')
-    X_val = load_data_from_mongodb('X_val')
-    y_val = load_data_from_mongodb('y_val')
-    X_superval = load_data_from_mongodb('X_superval')
-    y_superval = load_data_from_mongodb('y_superval')
+    # Calculate dunn's index for supervalidation set
+    superval_dunn_index = jqmcvi.dunn_fast(X_superval, superval_pred)
+
+    # Calculate Davies Bouldin index or DBI for the supervalidation set
+    superval_db_index = davies_bouldin_score(X_superval, superval_pred)
+
+    # Calculate Calinski Harabasz Index for the supervalidation set
+    superval_ch_index = calinski_harabasz_score(X_superval, superval_pred)
+    
+    return superval_silhouette_avg, superval_dunn_index, superval_db_index, superval_ch_index, # superval_explained_variance
+
+def evaluate_model(mongodb_host, mongodb_port, mongodb_db, model_path):
+    client = MongoClient(host=mongodb_host, port=mongodb_port)
+    db = client[mongodb_db]
+    
+    X_test = load_data_from_mongodb(db, 'X_test')
+    X_val = load_data_from_mongodb(db, 'X_val')
+    X_superval = load_data_from_mongodb(db, 'X_superval')
     
     # Ensure column names are strings for consistency
     X_test = X_test.rename(str, axis="columns")
@@ -95,11 +125,11 @@ def evaluate_model(redis_host, redis_port, redis_db, model_path):
         model = pickle.load(f)
 
     # Evaluate the model on test data
-    test_accuracy, test_roc_auc, test_confusion_matrix, test_classification_report = evaluate_test_data(X_test, y_test, model)
+    test_silhouette_avg, test_dunn_index, test_db_index, test_ch_index = evaluate_test_data(X_test, model)
     # Evaluate the model on validation data
-    val_accuracy, val_roc_auc, val_confusion_matrix, val_classification_report = evaluate_validation_data(X_val, y_val, model)
+    val_silhouette_avg, val_dunn_index, val_db_index, val_ch_index = evaluate_validation_data(X_val, model)
     # Evaluate the model on super validation data
-    superval_accuracy, superval_roc_auc, superval_confusion_matrix, superval_classification_report = evaluate_supervalidation_data(X_superval, y_superval, model)
+    superval_silhouette_avg, superval_dunn_index, superval_db_index, superval_ch_index = evaluate_supervalidation_data(X_superval, model)
     
     # Return evaluation metrics for test, validation, and super validation data
-    return test_accuracy, test_roc_auc, test_confusion_matrix, test_classification_report, val_accuracy, val_roc_auc, val_confusion_matrix, val_classification_report, superval_accuracy, superval_roc_auc, superval_confusion_matrix, superval_classification_report
+    return test_silhouette_avg, test_dunn_index, test_db_index, test_ch_index, val_silhouette_avg, val_dunn_index, val_db_index, val_ch_index, superval_silhouette_avg, superval_dunn_index, superval_db_index, superval_ch_index
