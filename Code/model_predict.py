@@ -123,7 +123,7 @@ def predict_output(transaction_date, transaction_amount, merchant_category, card
     
     # Predict output
     try:
-        prediction = model.predict(X)[0]  # Make a prediction (assume only one prediction is made)
+        prediction = model.predict(data)[0]  # Make a prediction (assume only one prediction is made)
         return f"Model Prediction: {prediction}"  # Return the prediction
     except Exception as e:
         print("Error during prediction:", e)  # Print any error that occurs
