@@ -205,10 +205,10 @@ with tab3:
         st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_test_db_index), unsafe_allow_html=True)
-        st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
-        st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_test_ch_index), unsafe_allow_html=True)
+        # st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
+        # st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
 
     with isolation_col2:
         st.markdown(markdown_top_center("Validation Metrics:"), unsafe_allow_html=True)
@@ -218,10 +218,10 @@ with tab3:
         st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_val_db_index), unsafe_allow_html=True)
-        st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
-        st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_val_ch_index), unsafe_allow_html=True)
+        # st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
+        # st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
 
     with isolation_col3:
         st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
@@ -231,27 +231,29 @@ with tab3:
         st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(isolation_superval_ch_index), unsafe_allow_html=True)
         
     st.divider()
     
     # Display classification reports for test, validation, and super validation sets
-    st.markdown("<h3 style='text-align: center; color: white;'>Classification Reports</h3>", unsafe_allow_html=True)
-    st.write(" ")
+    # st.markdown("<h3 style='text-align: center; color: white;'>Classification Reports</h3>", unsafe_allow_html=True)
+    # st.write(" ")
     
-    st.text("Test Classification Report:")
-    st.text(isolation_test_ch_index)
+    # st.text("Test Classification Report:")
+    # st.text(isolation_test_ch_index)
     
-    st.divider()
+    # st.divider()
 
-    st.text("Validation Classification Report:")
-    st.text(isolation_val_ch_index)
+    # st.text("Validation Classification Report:")
+    # st.text(isolation_val_ch_index)
     
-    st.divider()
+    # st.divider()
 
-    st.text("Super Validation Classification Report:")
-    st.text(isolation_superval_ch_index)
+    # st.text("Super Validation Classification Report:")
+    # st.text(isolation_superval_ch_index)
     
-    st.divider()
+    # st.divider()
     
     # # Displaying the metrics for the Voting Classifier Model
     # st.markdown("<h3 style='text-align: center; color: white;'>Voting Classifier Model</h3>", unsafe_allow_html=True)
@@ -400,70 +402,102 @@ with tab4:
             "LocalOutlier factor": st.session_state.local_outlier_factor__path,
             "One-class SVM": st.session_state.oneClass_model_path
         }
-        
-        subscription_type = st.selectbox(label="Subscription Type", 
-                                         options=["Basic", "Gold", "Premium"])
-        
-        payment_method = st.selectbox(label="Payment Method",
-                                      options= ["CreditCard", "DebitCard", "UPI"])
-        
-        country = st.selectbox(label="Country",
-                               options=["USA", "China", "Japan", "Taiwan", "Germany", "UK", "France", "Canada", "Australia", "Brazil"])
-        
-        device = st.selectbox(label="Device",
-                              options=["Mobile", "Desktop", "Tablet"])
-        
-        annual_fee = st.selectbox(label= "Annual Fee",
-                                  options= [29.99, 59.99, 79.99])
-
-        account_age = st.number_input(label="Account Age (in years)",
-                                      min_value=1,
-                                      max_value=36,
-                                      value=10)
-        
-        number_of_logins = st.number_input(label="Number of Logins",
-                                           min_value=1,
-                                           max_value= 1000, 
-                                           value=568)
-        
-        total_spent = st.number_input(label="Total Spent",
+        transaction_date = st.date_input(label="Transaction date",
+                                        format="MM-DD-YYYY",
+                                        value=datetime.date(2023, 6, 30))
+                                        
+        transaction_amount = st.number_input(label="Transaction amount",
                                       min_value=0.0,
-                                      max_value=5000.0,
+                                      max_value=10000.0,
                                       value=2625.2)
         
-        num_tickets_raised = st.number_input(label= "Number of Tickets Raised",
-                                             min_value=0,
-                                             max_value=20,
-                                             value= 5)
+        merchant_category = st.selectbox(label="Merchant Category",
+                               options=["Restaurant", "Groceries", "Healthcare", "Entertainment", "Education", "Travel", "Clothing", "Electronics"])
+
+        card_type = st.selectbox(label="Card Type",
+                               options=["Amex", "Visa", "Discover", "MasterCard"])
         
-        avg_response_time = st.number_input(label="Average Response Time (in hours)",
-                                            min_value=0,
-                                            max_value=48,
-                                            value=12)
+        transaction_location = st.text_input(label="Transaction location")
         
-        satisfaction_score = st.number_input(label="Satisfaction Score",
-                                             min_value=1,
-                                             max_value=10,
-                                             value=7)
+        cardholder_age = st.number_input(label="Cardholder Age (in years)",
+                                      min_value=18,
+                                      max_value=100,
+                                      value=25)
         
-        usage_hours_per_month = st.number_input(label= "Usage Hours per Month",
-                                                min_value=0,
-                                                max_value=200,
-                                                value=123)
+        cardholder_gender = st.selectbox(label="Cardholder Gender",
+                                      options= ["Male", "Female", "Genderfluid", "Polygender", "Genderqueer"])
         
-        signup_date = st.date_input(label="Signup Date", 
-                                    format="MM-DD-YYYY",
-                                    value=datetime.date(2023, 6, 30))
+        transaction_description = st.selectbox(label="Cardholder Gender",
+                                      options= ["Male", "Female", "Genderfluid", "Polygender", "Genderqueer"])
+        account_balance = st.number_input(label="Account Balance",
+                                           min_value=100,
+                                           max_value= 1000000, 
+                                           value=5000)
+        calander_income = st.number_input(label="Number of Logins",
+                                           min_value=20000,
+                                           max_value= 5000000, 
+                                           value=22500)
+        # subscription_type = st.selectbox(label="Subscription Type", 
+        #                                  options=["Basic", "Gold", "Premium"])
         
-        last_login = st.date_input(label="Last Login Date",
-                                   format="MM-DD-YYYY",
-                                   value=datetime.date(2024, 2, 15))
+        # payment_method = st.selectbox(label="Payment Method",
+        #                               options= ["CreditCard", "DebitCard", "UPI"])
+        
+        # country = st.selectbox(label="Country",
+        #                        options=["USA", "China", "Japan", "Taiwan", "Germany", "UK", "France", "Canada", "Australia", "Brazil"])
+        
+        # device = st.selectbox(label="Device",
+        #                       options=["Mobile", "Desktop", "Tablet"])
+        
+        # annual_fee = st.selectbox(label= "Annual Fee",
+        #                           options= [29.99, 59.99, 79.99])
+
+        # account_age = st.number_input(label="Account Age (in years)",
+        #                               min_value=1,
+        #                               max_value=36,
+        #                               value=10)
+        
+        # number_of_logins = st.number_input(label="Number of Logins",
+        #                                    min_value=1,
+        #                                    max_value= 1000, 
+        #                                    value=568)
+        
+        # total_spent = st.number_input(label="Total Spent",
+        #                               min_value=0.0,
+        #                               max_value=5000.0,
+        #                               value=2625.2)
+        
+        # num_tickets_raised = st.number_input(label= "Number of Tickets Raised",
+        #                                      min_value=0,
+        #                                      max_value=20,
+        #                                      value= 5)
+        
+        # avg_response_time = st.number_input(label="Average Response Time (in hours)",
+        #                                     min_value=0,
+        #                                     max_value=48,
+        #                                     value=12)
+        
+        # satisfaction_score = st.number_input(label="Satisfaction Score",
+        #                                      min_value=1,
+        #                                      max_value=10,
+        #                                      value=7)
+        
+        # usage_hours_per_month = st.number_input(label= "Usage Hours per Month",
+        #                                         min_value=0,
+        #                                         max_value=200,
+        #                                         value=123)
+        
+        # signup_date = st.date_input(label="Signup Date", 
+        #                             format="MM-DD-YYYY",
+        #                             value=datetime.date(2023, 6, 30))
+        
+        # last_login = st.date_input(label="Last Login Date",
+        #                            format="MM-DD-YYYY",
+        #                            value=datetime.date(2024, 2, 15))
         # datetime.date is needed to set a date in streamlit date_input
         
         # The form always needs a submit button to trigger the form submission
         if st.form_submit_button(label="Predict", use_container_width=True):
-            user_input = [signup_date, last_login, annual_fee, subscription_type, payment_method,
-                          account_age, number_of_logins, total_spent, num_tickets_raised, avg_response_time,
-                          satisfaction_score, country, device, usage_hours_per_month, model_path_mapping[selected_model]]
+            user_input = [transaction_date, transaction_amount,merchant_category,card_type,transaction_location,cardholder_age,cardholder_gender,transaction_description,account_balance,calander_income, model_path_mapping[selected_model]]
             
             st.write(predict_output(*user_input))  # Calling the predict_output function with user input and displaying the output
