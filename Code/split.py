@@ -41,7 +41,7 @@ def connect_to_mongodb(host, port, db_name):
 #     merged_data = pd.merge(data_postgres_processed, data_cassandra_processed, on='customer_id')
 #     return merged_data  # Return merged data
 
-def drop_customer_id_column(preprocessed_data):
+def drop_transaction_id_column(preprocessed_data):
     # Drop 'transaction_id' column if it exists
     preprocessed_data = preprocessed_data.drop(columns=['transaction_id'], errors='ignore')
     return preprocessed_data  # Return data without 'transaction_id' column
@@ -56,14 +56,14 @@ def split(preprocessed_data):
     
     # Split the data into train, test, validation, and super validation sets
     X_train, X_temp = train_test_split(X, test_size=0.4, random_state=42)  # 60% train, 40% temp
-    X_test, X_temp = train_test_split(X_temp, test_size=0.625, random_state=42)  # 0.625 * 0.4 = 0.25 for test
+    X_test, X_temp = train_test_split(X_temp, test_size=0.25, random_state=42)  # 0.625 * 0.4 = 0.25 for test
     X_val, X_superval= train_test_split(X_temp, test_size=0.4, random_state=42)  # 0.4 * 0.25 = 0.1 for validation and super validation
     
     return X_train, X_test, X_val, X_superval,   # Return split data
 
 def store_to_mongo(data, db, collection_name): # Store data into MongoDB
     collection = db[collection_name] # Select the collection
-    collection.insert_many(data.to_dict('records')) # Insert the data into the collection
+    collection.insert_one({'data': data}) # Insert the data into the collection
     
 def save_split_data(db, X_train, X_test, X_val, X_superval):
     # Store to MongoDB
@@ -99,7 +99,7 @@ def split_data(mongodb_host, mongodb_port, mongodb_db, data_postgres_processed):
    
     
     # Drop 'customer_id' column
-    preprocessed_data = drop_customer_id_column(data_postgres_processed)
+    preprocessed_data = drop_transaction_id_column(data_postgres_processed)
     
     # Uncomment the below line to see how the merged processed data looks
     # save_preprocessed_data(preprocessed_data)

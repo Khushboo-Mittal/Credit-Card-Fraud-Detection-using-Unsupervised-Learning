@@ -31,19 +31,8 @@ def preprocess_postgres_data(data):
     # Separate transaction_id
     transaction_id = data['transaction_id']
     # Define columns to be scaled, excluding 'transaction_id'
-    #Convert to datetime format
-    data['transaction_date'] = pd.to_datetime(data['transaction_date'])
-    
-    # Extract components
-    data['transaction_year'] = data['transaction_date'].dt.year
-    data['transaction_month'] = data['transaction_date'].dt.month
-    data['transaction_day'] = data['transaction_date'].dt.day
-
-    # Drop the transaction_date column
-    data = data.drop('transaction_date', axis=1)
     numerical_cols = [
-        'transaction_amount', 'cardholder_age', 'account_balance', 'calander_income', 'transaction_year',
-        'transaction_month', 'transaction_day'
+        'transaction_amount', 'cardholder_age', 'account_balance', 'calander_income'
     ]
     
     categorical_cols = [
@@ -66,7 +55,16 @@ def preprocess_postgres_data(data):
     data = pd.concat([data, temp_data], axis=1) # Concatenate scaled numerical columns back
     data['transaction_id'] = transaction_id # Reassign transaction_id
 
-  
+    #Convert to datetime format
+    data['transaction_date'] = pd.to_datetime(data['transaction_date'])
+    
+    # Extract components
+    data['transaction_year'] = data['transaction_date'].dt.year
+    data['transaction_month'] = data['transaction_date'].dt.month
+    data['transaction_day'] = data['transaction_date'].dt.day
+
+    # Drop the transaction_date column
+    data = data.drop('transaction_date', axis=1)
 
     # Convert text descriptions into numerical features
     # Initialize the TF-IDF Vectorizer
@@ -80,7 +78,7 @@ def preprocess_postgres_data(data):
 
     # Rejoin the data and drop original column
     data = pd.concat([data, description_data], axis=1)
-    data = data.drop('transaction_description', axis=1, inplace=True)
+    data = data.drop('transaction_description', axis=1, inplace=False)
     
     return data
 

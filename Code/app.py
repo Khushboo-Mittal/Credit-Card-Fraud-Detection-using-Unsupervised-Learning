@@ -64,7 +64,7 @@ if "mongodb_host" not in st.session_state:
     st.session_state.mongodb_host = "localhost"
     
 if "mongodb_port" not in st.session_state:
-    st.session_state.mongodb_port = "27017"
+    st.session_state.mongodb_port = 27017
     
 if "mongodb_db" not in st.session_state:
     st.session_state.mongodb_db = "1"
@@ -117,7 +117,7 @@ with tab1:
             st.write(" ")
             
             st.session_state.mongodb_host = st.text_input("MongoDB Host", st.session_state.mongodb_host)
-            st.session_state.mongodb_port = st.text_input("Port", st.session_state.mongodb_port)
+            st.session_state.mongodb_port = st.number_input("Port", st.session_state.mongodb_port)
             st.session_state.mongodb_db = st.text_input("DB", st.session_state.mongodb_db)
         
         # Tab for Paths Configuration
