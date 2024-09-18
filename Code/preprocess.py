@@ -30,34 +30,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 def preprocess_postgres_data(data):
     # Separate transaction_id
     transaction_id = data['transaction_id']
-
     # Define columns to be scaled, excluding 'transaction_id'
-    numerical_cols = [
-        'transaction_amount',
-        'cardholder_age',
-        'account_balance',
-        'calander_income'
-    ]
-
-    # Create a temporary DataFrame for scaling
-    temp_data = data[numerical_cols].copy()
-
-    scaler = StandardScaler() # Initialize the StandardScaler
-    temp_data = pd.DataFrame(scaler.fit_transform(temp_data), columns=numerical_cols) # Scale numerical columns
-
-    # Encode categorical columns
-    encoder = LabelEncoder() # Initialize the LabelEncoder
-    categorical_cols = data.select_dtypes(include=['object']).columns.tolist() # Get list of categorical columns
-    for col in categorical_cols:
-        data[col] = encoder.fit_transform(data[col]) # Encode categorical columns
-
-    # Rejoin transaction_id and scaled numerical columns
-    data = data.drop(columns=numerical_cols) # Drop original numerical columns
-    data = pd.concat([data, temp_data], axis=1) # Concatenate scaled numerical columns back
-    data['transaction_id'] = transaction_id # Reassign transaction_id
-
     #Convert to datetime format
-    data['transaction_date'] = pd.to_datetime(data['transaction_date'], format='%d-%m-%Y')
+    data['transaction_date'] = pd.to_datetime(data['transaction_date'])
     
     # Extract components
     data['transaction_year'] = data['transaction_date'].dt.year
@@ -66,6 +41,32 @@ def preprocess_postgres_data(data):
 
     # Drop the transaction_date column
     data = data.drop('transaction_date', axis=1)
+    numerical_cols = [
+        'transaction_amount', 'cardholder_age', 'account_balance', 'calander_income', 'transaction_year',
+        'transaction_month', 'transaction_day'
+    ]
+    
+    categorical_cols = [
+        'merchant_category', 'card_type', 'transaction_location', 'cardholder_gender', 
+    ]
+    
+    # Create a temporary DataFrame for scaling
+    temp_data = data[numerical_cols].copy()
+
+    scaler = StandardScaler() # Initialize the StandardScaler
+    temp_data = pd.DataFrame(scaler.fit_transform(temp_data), columns=numerical_cols) # Scale numerical columns
+
+    # Encode categorical columns
+    encoder = LabelEncoder() # Initialize the LabelEncoder
+    for col in categorical_cols:
+        data[col] = encoder.fit_transform(data[col]) # Encode categorical columns
+
+    # Rejoin transaction_id and scaled numerical columns
+    data = data.drop(columns=numerical_cols) # Drop original numerical columns
+    data = pd.concat([data, temp_data], axis=1) # Concatenate scaled numerical columns back
+    data['transaction_id'] = transaction_id # Reassign transaction_id
+
+  
 
     # Convert text descriptions into numerical features
     # Initialize the TF-IDF Vectorizer

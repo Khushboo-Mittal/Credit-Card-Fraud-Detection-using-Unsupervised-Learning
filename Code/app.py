@@ -33,7 +33,7 @@ from model_predict import predict_output  # Importing the predict_output functio
 
 
 # Setting the page configuration for the web app
-st.set_page_config(page_title="Churn Prediction", page_icon=":chart_with_upwards_trend:", layout="centered")
+st.set_page_config(page_title="Credit Card Prediction", page_icon=":chart_with_upwards_trend:", layout="centered")
 
 # Adding a heading to the web app
 st.markdown("<h1 style='text-align: center; color: white;'>Churn Prediction </h1>", unsafe_allow_html=True)
@@ -64,7 +64,7 @@ if "mongodb_host" not in st.session_state:
     st.session_state.mongodb_host = "localhost"
     
 if "mongodb_port" not in st.session_state:
-    st.session_state.mongodb_port = " 27017"
+    st.session_state.mongodb_port = "27017"
     
 if "mongodb_db" not in st.session_state:
     st.session_state.mongodb_db = "1"
@@ -74,7 +74,7 @@ if "master_data_path" not in st.session_state:
     st.session_state.master_data_path = "Data/Master/Mock_data.csv"
     
 if "isolation_forest_path" not in st.session_state:
-    st.session_state.isolation_forest_model_path = "isolation_forest_model.pkl"
+    st.session_state.isolation_forest_path = "isolation_forest_model.pkl"
     
 if "local_outlier_factor_path" not in st.session_state:
     st.session_state.local_outlier_factor_model_path = "local_outlier_factor_model.pkl"
@@ -403,7 +403,7 @@ with tab4:
             "One-class SVM": st.session_state.oneClass_model_path
         }
         transaction_date = st.date_input(label="Transaction date",
-                                        format="MM-DD-YYYY",
+                                        format="DD-MM-YYYY",
                                         value=datetime.date(2023, 6, 30))
                                         
         transaction_amount = st.number_input(label="Transaction amount",

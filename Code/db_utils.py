@@ -33,7 +33,7 @@ def connect_postgresql(username, password, host, port, database):
 def create_postgresql_table(engine):
     # Function to create a PostgreSQL table for customer data
     metadata = MetaData()  # Metadata object to hold information about the table
-    customer_data = Table('transaction_data', metadata,
+    transaction_data = Table('transaction_data', metadata,
                           Column('transaction_id', Integer, primary_key=True),  # Primary key column
                           Column('transaction_date', DateTime), #Date of Transaction column
                           Column('transaction_amount', Float),  # Transaction column

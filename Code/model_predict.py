@@ -43,7 +43,17 @@ def preprocess_input_data(transaction_date, transaction_amount, merchant_categor
         'account_balance': [account_balance],  # account_balance
         'calander_income': [calander_income],  # calander_income
     })
+    # Handle date columns
+    data['transaction_date'] = pd.to_datetime(data['transaction_date'])  # Convert signup date to datetime
     
+    # Extract features from date columns
+    data['transaction_year'] = data['transaction_date'].dt.year  # Extract year from transaction date
+    data['transaction_month'] = data['transaction_date'].dt.month  # Extract month from transaction date
+    data['transaction_day'] = data['transaction_date'].dt.day  # Extract day from transaction date
+    
+    # Drop original date columns
+    data = data.drop(columns=['transaction_date'])
+
     # Preprocess categorical and numerical columns
     numerical_cols = [
         'transaction_amount', 'cardholder_age', 'account_balance', 'calander_income', 'transaction_year',
@@ -54,17 +64,6 @@ def preprocess_input_data(transaction_date, transaction_amount, merchant_categor
         'merchant_category', 'card_type', 'transaction_location', 'cardholder_gender', 
     ]
     
-    # Handle date columns
-    data['transaction_date'] = pd.to_datetime(data['signup_date'])  # Convert signup date to datetime
-    
-    # Extract features from date columns
-    data['transaction_year'] = data['transaction_date'].dt.year  # Extract year from transaction date
-    data['transaction_month'] = data['transaction_date'].dt.month  # Extract month from transaction date
-    data['transaction_day'] = data['transaction_date'].dt.day  # Extract day from transaction date
-    
-    # Drop original date columns
-    data = data.drop(columns=['transaction_date'])
-
     # Convert text descriptions into numerical features
     # Initialize the TF-IDF Vectorizer
     tfidf = TfidfVectorizer(max_features=100)
