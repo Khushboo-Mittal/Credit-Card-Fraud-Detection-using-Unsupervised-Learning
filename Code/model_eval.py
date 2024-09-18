@@ -1,4 +1,4 @@
-g# META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
         # Name: Mohini T and Vansh R
@@ -29,7 +29,7 @@ import pandas as pd # For data manipulation
 from sklearn.metrics import make_scorer, silhouette_score, calinski_harabasz_score, davies_bouldin_score # For model evaluation
 # from jqmcvi import base
 # import jqmcvi.base as jqmcvi # For model evaluation (Dunn's index) 
-from clusteval import dunn
+# from clusteval import dunn_index
 
 # Load test, validation, and super validation data from MongoDB
 def load_data_from_mongodb(db, collection_name):
@@ -53,7 +53,7 @@ def evaluate_test_data(X_test, model):
     # test_explained_variance = pca.explained_variance_ratio_.sum()
 
     # Calculate dunn's index for test set
-    test_dunn_index = dunn(X_test, pred)
+    # test_dunn_index = dunn_index(X_test, pred)
 
     # Calculate Davies Bouldin index or DBI
     test_db_index = davies_bouldin_score(X_test, pred)
@@ -61,7 +61,7 @@ def evaluate_test_data(X_test, model):
     # Calculate Calinski Harabasz Index
     test_ch_index = calinski_harabasz_score(X_test, pred)
     
-    return test_silhouette_avg, test_dunn_index, test_db_index, test_ch_index, # test_explained_variance
+    return test_silhouette_avg, test_db_index, test_ch_index, # test_explained_variance
 
 def evaluate_validation_data(X_val, model):
     # Predict labels for the validation set
@@ -76,7 +76,7 @@ def evaluate_validation_data(X_val, model):
     # val_explained_variance = pca.explained_variance_ratio_.sum()
 
     # Calculate dunn's index for validation set
-    val_dunn_index = dunn(X_val, val_pred)
+    # val_dunn_index = dunn(X_val, val_pred)
 
     # Calculate Davies Bouldin index or DBI for the validation set
     val_db_index = davies_bouldin_score(X_val, val_pred)
@@ -84,7 +84,7 @@ def evaluate_validation_data(X_val, model):
     # Calculate Calinski Harabasz Index for the validation set
     val_ch_index = calinski_harabasz_score(X_val, val_pred)
     
-    return val_silhouette_avg, val_dunn_index, val_db_index, val_ch_index, # val_explained_variance
+    return val_silhouette_avg, val_db_index, val_ch_index, # val_explained_variance
 
 def evaluate_supervalidation_data(X_superval, y_superval, model):
     # Predict labels for the supervalidation set
@@ -99,7 +99,7 @@ def evaluate_supervalidation_data(X_superval, y_superval, model):
     # superval_explained_variance = pca.explained_variance_ratio_.sum()
 
     # Calculate dunn's index for supervalidation set
-    superval_dunn_index = dunn(X_superval, superval_pred)
+    # superval_dunn_index = dunn(X_superval, superval_pred)
 
     # Calculate Davies Bouldin index or DBI for the supervalidation set
     superval_db_index = davies_bouldin_score(X_superval, superval_pred)
@@ -107,7 +107,7 @@ def evaluate_supervalidation_data(X_superval, y_superval, model):
     # Calculate Calinski Harabasz Index for the supervalidation set
     superval_ch_index = calinski_harabasz_score(X_superval, superval_pred)
     
-    return superval_silhouette_avg, superval_dunn_index, superval_db_index, superval_ch_index, # superval_explained_variance
+    return superval_silhouette_avg,  superval_db_index, superval_ch_index, # superval_explained_variance
 
 def evaluate_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     client = MongoClient(host=mongodb_host, port=mongodb_port)
@@ -127,11 +127,11 @@ def evaluate_model(mongodb_host, mongodb_port, mongodb_db, model_path):
         model = pickle.load(f)
 
     # Evaluate the model on test data
-    test_silhouette_avg, test_dunn_index, test_db_index, test_ch_index = evaluate_test_data(X_test, model)
+    test_silhouette_avg, test_db_index, test_ch_index = evaluate_test_data(X_test, model)
     # Evaluate the model on validation data
-    val_silhouette_avg, val_dunn_index, val_db_index, val_ch_index = evaluate_validation_data(X_val, model)
+    val_silhouette_avg, val_db_index, val_ch_index = evaluate_validation_data(X_val, model)
     # Evaluate the model on super validation data
-    superval_silhouette_avg, superval_dunn_index, superval_db_index, superval_ch_index = evaluate_supervalidation_data(X_superval, model)
+    superval_silhouette_avg, superval_db_index, superval_ch_index = evaluate_supervalidation_data(X_superval, model)
     
     # Return evaluation metrics for test, validation, and super validation data
-    return test_silhouette_avg, test_dunn_index, test_db_index, test_ch_index, val_silhouette_avg, val_dunn_index, val_db_index, val_ch_index, superval_silhouette_avg, superval_dunn_index, superval_db_index, superval_ch_index
+    return test_silhouette_avg,  test_db_index, test_ch_index, val_silhouette_avg,  val_db_index, val_ch_index, superval_silhouette_avg, superval_db_index, superval_ch_index

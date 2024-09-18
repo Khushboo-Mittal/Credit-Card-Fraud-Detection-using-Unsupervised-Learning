@@ -187,7 +187,7 @@ with tab3:
     st.divider()
     
     # Get the model test, validation, and super validation metrics
-    isolation_test_silhouette_avg, isolation_test_dunn_index, isolation_test_db_index, isolation_test_ch_index, isolation_val_silhouette_avg, isolation_val_dunn_index, isolation_val_db_index, isolation_val_ch_index, isolation_superval_silhouette_avg, isolation_superval_dunn_index, isolation_superval_db_index, isolation_superval_ch_index = evaluate_model(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.isolation_forest_path)
+    isolation_test_silhouette_avg, isolation_test_db_index, isolation_test_ch_index, isolation_val_silhouette_avg, isolation_val_db_index, isolation_val_ch_index, isolation_superval_silhouette_avg, isolation_superval_db_index, isolation_superval_ch_index = evaluate_model(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.isolation_forest_path)
     
     # Display model metrics in three columns
     isolation_col1, isolation_col2, isolation_col3 = st.columns(3)
@@ -201,8 +201,8 @@ with tab3:
         st.markdown(markdown_top_center("Test Metrics:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(f"Silhouette avg: {isolation_test_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        st.markdown(markdown_top_center(f"DUNN index: {isolation_test_dunn_index:.5f}"), unsafe_allow_html=True)
-        st.write(" ")
+        # st.markdown(markdown_top_center(f"DUNN index: {isolation_test_dunn_index:.5f}"), unsafe_allow_html=True)
+        # st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_test_db_index), unsafe_allow_html=True)
         st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
@@ -214,8 +214,8 @@ with tab3:
         st.markdown(markdown_top_center("Validation Metrics:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(f"Silhouette avg: {isolation_val_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        st.markdown(markdown_top_center(f"DUNN index: {isolation_val_dunn_index:.5f}"), unsafe_allow_html=True)
-        st.write(" ")
+        # st.markdown(markdown_top_center(f"DUNN index: {isolation_val_dunn_index:.5f}"), unsafe_allow_html=True)
+        # st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_val_db_index), unsafe_allow_html=True)
         st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
@@ -227,8 +227,8 @@ with tab3:
         st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(f"Silhouette avg: {isolation_superval_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        st.markdown(markdown_top_center(f"DUNN index: {isolation_superval_dunn_index:.5f}"), unsafe_allow_html=True)
-        st.write(" ")
+        # st.markdown(markdown_top_center(f"DUNN index: {isolation_superval_dunn_index:.5f}"), unsafe_allow_html=True)
+        # st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
         st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
@@ -439,64 +439,7 @@ with tab4:
                                            min_value=20000,
                                            max_value= 5000000, 
                                            value=22500)
-        # subscription_type = st.selectbox(label="Subscription Type", 
-        #                                  options=["Basic", "Gold", "Premium"])
         
-        # payment_method = st.selectbox(label="Payment Method",
-        #                               options= ["CreditCard", "DebitCard", "UPI"])
-        
-        # country = st.selectbox(label="Country",
-        #                        options=["USA", "China", "Japan", "Taiwan", "Germany", "UK", "France", "Canada", "Australia", "Brazil"])
-        
-        # device = st.selectbox(label="Device",
-        #                       options=["Mobile", "Desktop", "Tablet"])
-        
-        # annual_fee = st.selectbox(label= "Annual Fee",
-        #                           options= [29.99, 59.99, 79.99])
-
-        # account_age = st.number_input(label="Account Age (in years)",
-        #                               min_value=1,
-        #                               max_value=36,
-        #                               value=10)
-        
-        # number_of_logins = st.number_input(label="Number of Logins",
-        #                                    min_value=1,
-        #                                    max_value= 1000, 
-        #                                    value=568)
-        
-        # total_spent = st.number_input(label="Total Spent",
-        #                               min_value=0.0,
-        #                               max_value=5000.0,
-        #                               value=2625.2)
-        
-        # num_tickets_raised = st.number_input(label= "Number of Tickets Raised",
-        #                                      min_value=0,
-        #                                      max_value=20,
-        #                                      value= 5)
-        
-        # avg_response_time = st.number_input(label="Average Response Time (in hours)",
-        #                                     min_value=0,
-        #                                     max_value=48,
-        #                                     value=12)
-        
-        # satisfaction_score = st.number_input(label="Satisfaction Score",
-        #                                      min_value=1,
-        #                                      max_value=10,
-        #                                      value=7)
-        
-        # usage_hours_per_month = st.number_input(label= "Usage Hours per Month",
-        #                                         min_value=0,
-        #                                         max_value=200,
-        #                                         value=123)
-        
-        # signup_date = st.date_input(label="Signup Date", 
-        #                             format="MM-DD-YYYY",
-        #                             value=datetime.date(2023, 6, 30))
-        
-        # last_login = st.date_input(label="Last Login Date",
-        #                            format="MM-DD-YYYY",
-        #                            value=datetime.date(2024, 2, 15))
-        # datetime.date is needed to set a date in streamlit date_input
         
         # The form always needs a submit button to trigger the form submission
         if st.form_submit_button(label="Predict", use_container_width=True):
