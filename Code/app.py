@@ -417,7 +417,8 @@ with tab4:
         card_type = st.selectbox(label="Card Type",
                                options=["Amex", "Visa", "Discover", "MasterCard"])
         
-        transaction_location = st.text_input(label="Transaction location")
+        transaction_location = st.selectbox(label="Transaction location",
+                                             options=["Bengaluru","Jaipur","Indore","Bhopal","Pune","Chennai","Delhi","Mumbai","Ahemdabad","Hyderabad"])
         
         cardholder_age = st.number_input(label="Cardholder Age (in years)",
                                       min_value=18,
@@ -425,15 +426,16 @@ with tab4:
                                       value=25)
         
         cardholder_gender = st.selectbox(label="Cardholder Gender",
-                                      options= ["Male", "Female", "Genderfluid", "Polygender", "Genderqueer"])
+                                      options= ["Male", "Female", "Other"])
         
-        transaction_description = st.selectbox(label="Cardholder Gender",
-                                      options= ["Male", "Female", "Genderfluid", "Polygender", "Genderqueer"])
+        transaction_description = st.text_input(label="Transaction description")
+        
         account_balance = st.number_input(label="Account Balance",
                                            min_value=100,
                                            max_value= 1000000, 
                                            value=5000)
-        calander_income = st.number_input(label="Number of Logins",
+        
+        calander_income = st.number_input(label="Calander Income",
                                            min_value=20000,
                                            max_value= 5000000, 
                                            value=22500)

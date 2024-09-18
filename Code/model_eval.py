@@ -1,4 +1,4 @@
-# META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+g# META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
         # Name: Mohini T and Vansh R
@@ -27,7 +27,9 @@ from pymongo import MongoClient # For connecting to MongoDB database
 import pickle # For loading the model from a pickle file
 import pandas as pd # For data manipulation
 from sklearn.metrics import make_scorer, silhouette_score, calinski_harabasz_score, davies_bouldin_score # For model evaluation
-import jqmcvi.base as jqmcvi # For model evaluation (Dunn's index) 
+# from jqmcvi import base
+# import jqmcvi.base as jqmcvi # For model evaluation (Dunn's index) 
+from clusteval import dunn
 
 # Load test, validation, and super validation data from MongoDB
 def load_data_from_mongodb(db, collection_name):
@@ -51,7 +53,7 @@ def evaluate_test_data(X_test, model):
     # test_explained_variance = pca.explained_variance_ratio_.sum()
 
     # Calculate dunn's index for test set
-    test_dunn_index = jqmcvi.dunn_fast(X_test, pred)
+    test_dunn_index = dunn(X_test, pred)
 
     # Calculate Davies Bouldin index or DBI
     test_db_index = davies_bouldin_score(X_test, pred)
@@ -74,7 +76,7 @@ def evaluate_validation_data(X_val, model):
     # val_explained_variance = pca.explained_variance_ratio_.sum()
 
     # Calculate dunn's index for validation set
-    val_dunn_index = jqmcvi.dunn_fast(X_val, val_pred)
+    val_dunn_index = dunn(X_val, val_pred)
 
     # Calculate Davies Bouldin index or DBI for the validation set
     val_db_index = davies_bouldin_score(X_val, val_pred)
@@ -97,7 +99,7 @@ def evaluate_supervalidation_data(X_superval, y_superval, model):
     # superval_explained_variance = pca.explained_variance_ratio_.sum()
 
     # Calculate dunn's index for supervalidation set
-    superval_dunn_index = jqmcvi.dunn_fast(X_superval, superval_pred)
+    superval_dunn_index = dunn(X_superval, superval_pred)
 
     # Calculate Davies Bouldin index or DBI for the supervalidation set
     superval_db_index = davies_bouldin_score(X_superval, superval_pred)
