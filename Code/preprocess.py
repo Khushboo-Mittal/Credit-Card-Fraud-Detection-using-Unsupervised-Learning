@@ -26,7 +26,6 @@ import pandas as pd     # Importing pandas for data manipulation
 from sqlalchemy import create_engine
 from sklearn.preprocessing import StandardScaler, LabelEncoder  # Importing tools for data preprocessing
 import db_utils                                                 # Importing utility functions for database operations
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 def preprocess_postgres_data(data):
     # Separate transaction_id
@@ -43,25 +42,21 @@ def preprocess_postgres_data(data):
 
     # Drop the transaction_date column
     data = data.drop('transaction_date', axis=1)
-    
-    
+     
     numerical_cols = [
         'transaction_amount', 'cardholder_age', 'account_balance', 'calander_income','transaction_year','transaction_month','transaction_day'
     ]
 
     categorical_cols = [
-        'merchant_category', 'card_type', 'transaction_location', 'cardholder_gender', 
+        'merchant_category', 'card_type', 'transaction_location', 'cardholder_gender', 'transaction_description'
     ]
 
     # Create a temporary DataFrame for scaling
     temp_data = data[numerical_cols].copy()
-    
-    # # Ensure numerical columns are of correct type
-    # for col in numerical_cols:
-    #     temp_data[col] = pd.to_numeric(temp_data[col], errors='coerce')
+    temp_data.columns = temp_data.columns.str.strip()
 
     scaler = StandardScaler() # Initialize the StandardScaler
-    temp_data = pd.DataFrame(scaler.fit_transform(temp_data), columns=numerical_cols) # Scale numerical columns
+    temp_data = pd.DataFrame(scaler.fit_transform(temp_data)) # Scale numerical columns
 
     # Encode categorical columns
     encoder = LabelEncoder() # Initialize the LabelEncoder
@@ -73,20 +68,6 @@ def preprocess_postgres_data(data):
     data = pd.concat([data, temp_data], axis=1) # Concatenate scaled numerical columns back
     data['transaction_id'] = transaction_id # Reassign transaction_id
 
-
-    # # Convert text descriptions into numerical features
-    # Initialize the TF-IDF Vectorizer
-    tfidf = TfidfVectorizer(max_features=100)
-
-    # Transform the transaction_description column
-    description_features = tfidf.fit_transform(data['transaction_description'])
-
-    # Convert to dataframe
-    description_data = pd.DataFrame(description_features.toarray(), columns=tfidf.get_feature_names_out())
-
-    # Rejoin the data and drop original column
-    data = pd.concat([data, description_data], axis=1)
-    data = data.drop('transaction_description', axis=1, inplace=False)
     return data
 
 

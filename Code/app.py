@@ -196,38 +196,30 @@ with tab3:
     isolation_test_silhouette_avg, isolation_test_db_index, isolation_test_ch_index, isolation_val_silhouette_avg, isolation_val_db_index, isolation_val_ch_index, isolation_superval_silhouette_avg, isolation_superval_db_index, isolation_superval_ch_index = evaluate_model(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.isolation_forest_path)
     
     # Display model metrics in three columns
-    isolation_col1, isolation_col2, isolation_col3 = st.columns(3)
+    isolation_col1,isolation_col2, isolation_col3 = st.columns(3)
     
     # Helper function to center text vertically at the top using markdown
     def markdown_top_center(text):
         return f'<div style="display: flex; justify-content: center; align-items: flex-start; height: 100%;">{text}</div>'
 
-    # Displaying metrics for test, validation, and super validation sets
     with isolation_col1:
+        # Displaying metrics for test, validation, and super validation sets
         st.markdown(markdown_top_center("Test Metrics:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(f"Silhouette avg: {isolation_test_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        # st.markdown(markdown_top_center(f"DUNN index: {isolation_test_dunn_index:.5f}"), unsafe_allow_html=True)
-        # st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_test_db_index), unsafe_allow_html=True)
         st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_test_ch_index), unsafe_allow_html=True)
-        # st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        # st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
 
     with isolation_col2:
         st.markdown(markdown_top_center("Validation Metrics:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(f"Silhouette avg: {isolation_val_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        # st.markdown(markdown_top_center(f"DUNN index: {isolation_val_dunn_index:.5f}"), unsafe_allow_html=True)
-        # st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_val_db_index), unsafe_allow_html=True)
         st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_val_ch_index), unsafe_allow_html=True)
-        # st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-        # st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
 
     with isolation_col3:
         st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
@@ -242,152 +234,6 @@ with tab3:
         
     st.divider()
     
-    # Display classification reports for test, validation, and super validation sets
-    # st.markdown("<h3 style='text-align: center; color: white;'>Classification Reports</h3>", unsafe_allow_html=True)
-    # st.write(" ")
-    
-    # st.text("Test Classification Report:")
-    # st.text(isolation_test_ch_index)
-    
-    # st.divider()
-
-    # st.text("Validation Classification Report:")
-    # st.text(isolation_val_ch_index)
-    
-    # st.divider()
-
-    # st.text("Super Validation Classification Report:")
-    # st.text(isolation_superval_ch_index)
-    
-    # st.divider()
-    
-    # # Displaying the metrics for the Voting Classifier Model
-    # st.markdown("<h3 style='text-align: center; color: white;'>Voting Classifier Model</h3>", unsafe_allow_html=True)
-    # st.divider()
-    
-    # # Get the model test, validation, and super validation metrics
-    # voting_test_accuracy, voting_test_roc_auc, voting_test_confusion_matrix, voting_test_classification_report, voting_val_accuracy, voting_val_roc_auc, voting_val_confusion_matrix, voting_val_classification_report, voting_superval_accuracy, voting_superval_roc_auc, voting_superval_confusion_matrix, voting_superval_classification_report = evaluate_model(st.session_state.redis_host, st.session_state.redis_port, st.session_state.redis_db, st.session_state.voting_model_path)
-
-    # # Display model metrics in three columns
-    # voting_col1, voting_col2, voting_col3 = st.columns(3)
-    
-    # # Displaying metrics for test, validation, and super validation sets
-    # with voting_col1:
-    #     st.markdown(markdown_top_center("Test Metrics:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(f"Accuracy: {voting_test_accuracy:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-        
-    #     # Note that ROC AUC is not available for Voting Classifier
-    #     if voting_test_roc_auc is not None:
-    #         st.markdown(markdown_top_center(f"ROC AUC: {voting_test_roc_auc:.5f}"), unsafe_allow_html=True)
-    #     else:
-    #         st.markdown(markdown_top_center("ROC AUC: N/A"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(voting_test_confusion_matrix), unsafe_allow_html=True)
-        
-    # with voting_col2:
-    #     st.markdown(markdown_top_center("Validation Metrics:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(f"Accuracy: {voting_val_accuracy:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     if voting_val_roc_auc is not None:
-    #         st.markdown(markdown_top_center(f"ROC AUC: {voting_val_roc_auc:.5f}"), unsafe_allow_html=True)
-    #     else:
-    #         st.markdown(markdown_top_center("ROC AUC: N/A"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(voting_val_confusion_matrix), unsafe_allow_html=True)
-        
-    # with voting_col3:
-    #     st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(f"Accuracy: {voting_superval_accuracy:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     if voting_superval_roc_auc is not None:
-    #         st.markdown(markdown_top_center(f"ROC AUC: {voting_superval_roc_auc:.5f}"), unsafe_allow_html=True)
-    #     else:
-    #         st.markdown(markdown_top_center("ROC AUC: N/A"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(voting_superval_confusion_matrix), unsafe_allow_html=True)
-        
-    # st.divider()
-    
-    # # Display classification reports for test, validation, and super validation sets
-    # st.markdown("<h3 style='text-align: center; color: white;'>Classification Reports</h3>", unsafe_allow_html=True)
-    # st.write(" ")
-    
-    # st.text("Test Classification Report:")
-    # st.text(voting_test_classification_report)
-    
-    # st.divider()
-    
-    # st.text("Validation Classification Report:")
-    # st.text(voting_val_classification_report)
-    
-    # st.divider()
-    
-    # st.text("Super Validation Classification Report:")
-    # st.text(voting_superval_classification_report)
-    
-    # st.divider()
-    
-    # # Displaying the metrics for the Stacking Classifier Model
-    # st.markdown("<h3 style='text-align: center; color: white;'>Stacking Classifier Model</h3>", unsafe_allow_html=True)
-    # st.divider()
-    
-    # # Get the model test, validation, and super validation metrics
-    # stacking_test_accuracy, stacking_test_roc_auc, stacking_test_confusion_matrix, stacking_test_classification_report, stacking_val_accuracy, stacking_val_roc_auc, stacking_val_confusion_matrix, stacking_val_classification_report, stacking_superval_accuracy, stacking_superval_roc_auc, stacking_superval_confusion_matrix, stacking_superval_classification_report = evaluate_model(st.session_state.redis_host, st.session_state.redis_port, st.session_state.redis_db, st.session_state.stacking_model_path)
-    
-    # # Display model metrics in three columns
-    # stacking_col1, stacking_col2, stacking_col3 = st.columns(3)
-    
-    # # Displaying metrics for test, validation, and super validation sets
-    # with stacking_col1:
-    #     st.markdown(markdown_top_center("Test Metrics:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(f"Accuracy: {stacking_test_accuracy:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center(f"ROC AUC: {stacking_test_roc_auc:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(stacking_test_confusion_matrix), unsafe_allow_html=True)
-        
-    # with stacking_col2:
-    #     st.markdown(markdown_top_center("Validation Metrics:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(f"Accuracy: {stacking_val_accuracy:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center(f"ROC AUC: {stacking_val_roc_auc:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(stacking_val_confusion_matrix), unsafe_allow_html=True)
-        
-    # with stacking_col3:
-    #     st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(f"Accuracy: {stacking_superval_accuracy:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center(f"ROC AUC: {stacking_superval_roc_auc:.5f}"), unsafe_allow_html=True)
-    #     st.write(" ")
-    #     st.markdown(markdown_top_center("Confusion Matrix:"), unsafe_allow_html=True)
-    #     st.markdown(markdown_top_center(stacking_superval_confusion_matrix), unsafe_allow_html=True)
-        
-    # st.divider()
-    
-    # # Display classification reports for test, validation, and super validation sets
-    # st.markdown("<h3 style='text-align: center; color: white;'>Classification Reports</h3>", unsafe_allow_html=True)
-    
-    # st.text("Test Classification Report:")
-    # st.text(stacking_test_classification_report)
-    
-    # st.divider()
-    
-    # st.text("Validation Classification Report:")
-    # st.text(stacking_val_classification_report)
-    
-    # st.divider()
-    
-    # st.text("Super Validation Classification Report:")
-    # st.text(stacking_superval_classification_report)
-    
-    # st.divider()
       
 # Tab for Model Prediction
 with tab4:
