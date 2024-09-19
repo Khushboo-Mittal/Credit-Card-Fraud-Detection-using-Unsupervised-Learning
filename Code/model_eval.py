@@ -32,13 +32,23 @@ from sklearn.metrics import make_scorer, silhouette_score, calinski_harabasz_sco
 # from clusteval import dunn_index
 
 # Load test, validation, and super validation data from MongoDB
-def load_data_from_mongodb(db, collection_name):
-    # Connect to MongoDB
-    collection = db[collection_name]
-    data = collection.find_one()  # Retrieve the first document
-    if data and 'pickled_data' in data:
-        return pickle.loads(data['pickled_data'])  # Deserialize the pickled binary data
-    return None
+def read_data(db):
+    # Access the collections
+    x_train_collection = db['x_train']
+    x_test_collection = db['x_test']
+    x_val_collection = db['x_val']
+    x_superval_collection = db['x_superval']
+
+    # Load data into Pandas DataFrames
+    x_train_df = pd.DataFrame(list(x_train_collection.find()))
+    x_test_df = pd.DataFrame(list(x_test_collection.find()))
+    x_val_df = pd.DataFrame(list(x_val_collection.find()))
+    x_superval_df = pd.DataFrame(list(x_superval_collection.find()))
+    x_train_np = x_train_df.values
+    x_test_np = x_test_df.values
+    x_val_np = x_val_df.values
+    x_superval_np = x_superval_df.values
+    return x_train_np, x_test_np, x_val_np, x_superval_np
 
 def evaluate_test_data(X_test, model):
     # Predict labels for the test set
@@ -113,14 +123,13 @@ def evaluate_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     client = MongoClient(host=mongodb_host, port=mongodb_port)
     db = client[mongodb_db]
     
-    X_test = load_data_from_mongodb(db, 'X_test')
-    X_val = load_data_from_mongodb(db, 'X_val')
-    X_superval = load_data_from_mongodb(db, 'X_superval')
+    X_train, X_test, X_val, X_superval = read_data(db)
+    
     
     # Ensure column names are strings for consistency
-    X_test = X_test.rename(str, axis="columns")
-    X_val = X_val.rename(str, axis="columns")
-    X_superval = X_superval.rename(str, axis="columns")
+    # X_test = X_test.rename(str, axis="columns")
+    # X_val = X_val.rename(str, axis="columns")
+    # X_superval = X_superval.rename(str, axis="columns")
 
     # Load the best model from the pickle file
     with open(model_path, 'rb') as f:

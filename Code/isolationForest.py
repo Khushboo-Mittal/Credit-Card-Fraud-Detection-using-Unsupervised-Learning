@@ -14,15 +14,19 @@ def read_training_data(db):
     # Load data into Pandas DataFrames
     x_train_df = pd.DataFrame(list(x_train_collection.find()))
     x_test_df = pd.DataFrame(list(x_test_collection.find()))
+    x_train_np = x_train_df.values
+    x_test_np = x_test_df.values
+    return x_train_np, x_test_np
+
 
 
 def perform_hyperparameter_tuning(X_train):
     # Define the grid of hyperparameters to search over
     param_grid = {
-        'n_estimators': [100, 200, 300],  # Number of base estimators in ensemble
-        'max_samples': [0.1, 0.5, 1],  # Maximum number of samples to draw from the dataset
-        'max_features':[0.05,0.5,1], #Number of Features to draw from dataset to train each base estimator
-        'contamination': [0.01, 0.1, 0.2],  # Proportion of outliers in the sample
+        'n_estimators': [100, 50, 70],  # Number of base estimators in ensemble
+        'max_samples': [0.1, 0.05, 0.75],  # Maximum number of samples to draw from the dataset
+        'max_features':[0.05,0.5,0.7], #Number of Features to draw from dataset to train each base estimator
+        'contamination': [0.01, 0.05, 0.02],  # Proportion of outliers in the sample
         'bootstrap': [True, False]  # Whether bootstrap samples are used when building trees
     }
     
@@ -34,6 +38,7 @@ def perform_hyperparameter_tuning(X_train):
     # Initialize a GridSearchCV to search for the best hyperparameters
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, 
                                cv=3, n_jobs=-1, verbose=2,scoring=silhouette_scorer)
+    
     
     # Fit the GridSearchCV to the training data
     grid_search.fit(X_train)
@@ -68,12 +73,12 @@ def save_model(model, model_path):
         # Serialize the model and save it to the file
         pickle.dump(model, f)
 
-def load_from_mongo(db, collection_name):
-    collection = db[collection_name]
-    data_entry = collection.find_one({}, {'_id': 0, 'data': 1})
-    if data_entry:
-        return pickle.loads(data_entry['data'])
-    return None
+# def load_from_mongo(db, collection_name):
+#     collection = db[collection_name]
+#     data_entry = collection.find_one({}, {'_id': 0, 'data': 1})
+#     if data_entry:
+#         return pickle.loads(data_entry['data'])
+#     return None
 
 def train_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     
@@ -82,7 +87,8 @@ def train_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     db = client[mongodb_db]
     
     # Load the training data from MongoDB
-    X_train = load_from_mongo(db, 'x_train')
+    X_train,X_test = read_training_data(db)
+    
     
     # Perform hyperparameter tuning to find the best model
     best_model, best_params = perform_hyperparameter_tuning(X_train)
