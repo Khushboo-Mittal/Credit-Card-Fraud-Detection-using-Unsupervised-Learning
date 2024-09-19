@@ -36,11 +36,6 @@ def connect_to_mongodb(host, port, db_name):
     db = client[db_name]
     return db
 
-# def merge_data(data_postgres_processed, data_cassandra_processed):
-#     # Merge data from PostgreSQL and Cassandra using pd.merge on 'customer_id'
-#     merged_data = pd.merge(data_postgres_processed, data_cassandra_processed, on='customer_id')
-#     return merged_data  # Return merged data
-
 def drop_transaction_id_column(preprocessed_data):
     # Drop 'transaction_id' column if it exists
     preprocessed_data = preprocessed_data.drop(columns=['transaction_id'], errors='ignore')
@@ -71,25 +66,6 @@ def save_split_data(db, X_train, X_test, X_val, X_superval):
     store_to_mongo(pickle.dumps(X_val),db,'x_val')
     store_to_mongo(pickle.dumps(X_superval) ,db,'x_superval')
 
-    # Save the split data to Redis
-    # r.set('X_train', pickle.dumps(X_train))
-    # # r.set('y_train', pickle.dumps(y_train))
-    # r.set('X_test', pickle.dumps(X_test))
-    # # r.set('y_test', pickle.dumps(y_test))
-    # r.set('X_val', pickle.dumps(X_val))
-    # # r.set('y_val', pickle.dumps(y_val))
-    # r.set('X_superval', pickle.dumps(X_superval))
-    # # r.set('y_superval', pickle.dumps(y_superval))
-    
-    # Set expiration times for these keys if needed
-    # r.expire('X_train', 86400)  # Expires in 24 hours
-    # # r.expire('y_train', 86400)
-    # r.expire('X_test', 86400)
-    # # r.expire('y_test', 86400)
-    # r.expire('X_val', 86400)
-    # # r.expire('y_val', 86400)
-    # r.expire('X_superval', 86400)
-    # # r.expire('y_superval', 86400)
 
 def split_data(mongodb_host, mongodb_port, mongodb_db, data_postgres_processed):
     
@@ -101,7 +77,7 @@ def split_data(mongodb_host, mongodb_port, mongodb_db, data_postgres_processed):
     preprocessed_data = drop_transaction_id_column(data_postgres_processed)
     
     # Uncomment the below line to see how the merged processed data looks
-    # save_preprocessed_data(preprocessed_data)
+    save_preprocessed_data(preprocessed_data)
     
     # Split data
     X_train, X_test, X_val, X_superval = split(preprocessed_data)

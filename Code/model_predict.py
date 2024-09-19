@@ -1,19 +1,19 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
-        # Name: Mohini T and Vansh R
+        # Name: Prachi and Harshita
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
         # Version: V 1.0 (11 July 2024)
-            # Developers: Mohini T and Vansh R
+            # Developers: Prachi and Harshita
             # Unit test: Pass
             # Integration test: Pass
      
     # Description: This code snippet preprocesses input data for a machine learning model by scaling numerical
     # columns, encoding categorical columns, and extracting date components for further analysis.
         # PostgreSQL: Yes
-        # Cassandra: Yes
+        # MongoDB: Yes
 
 # CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 

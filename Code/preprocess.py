@@ -22,7 +22,8 @@
             # Pandas 2.2.2
             # Scikit-learn 1.5.0
 
-import pandas as pd                                             # Importing pandas for data manipulation
+import pandas as pd     # Importing pandas for data manipulation
+from sqlalchemy import create_engine
 from sklearn.preprocessing import StandardScaler, LabelEncoder  # Importing tools for data preprocessing
 import db_utils                                                 # Importing utility functions for database operations
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -42,6 +43,8 @@ def preprocess_postgres_data(data):
 
     # Drop the transaction_date column
     data = data.drop('transaction_date', axis=1)
+    
+    
     numerical_cols = [
         'transaction_amount', 'cardholder_age', 'account_balance', 'calander_income','transaction_year','transaction_month','transaction_day'
     ]
@@ -52,6 +55,10 @@ def preprocess_postgres_data(data):
 
     # Create a temporary DataFrame for scaling
     temp_data = data[numerical_cols].copy()
+    
+    # # Ensure numerical columns are of correct type
+    # for col in numerical_cols:
+    #     temp_data[col] = pd.to_numeric(temp_data[col], errors='coerce')
 
     scaler = StandardScaler() # Initialize the StandardScaler
     temp_data = pd.DataFrame(scaler.fit_transform(temp_data), columns=numerical_cols) # Scale numerical columns
@@ -64,7 +71,7 @@ def preprocess_postgres_data(data):
     # Rejoin transaction_id and scaled numerical columns
     data = data.drop(columns=numerical_cols) # Drop original numerical columns
     data = pd.concat([data, temp_data], axis=1) # Concatenate scaled numerical columns back
-    # data['transaction_id'] = transaction_id # Reassign transaction_id
+    data['transaction_id'] = transaction_id # Reassign transaction_id
 
 
     # # Convert text descriptions into numerical features
@@ -86,7 +93,7 @@ def preprocess_postgres_data(data):
 def load_and_preprocess_data(postgres_username, postgres_password, postgres_host, postgres_port, postgres_database):
 
     # Load data from PostgreSQL
-    postgres_engine = db_utils.connect_postgresql(postgres_username, postgres_password, postgres_host, postgres_port, postgres_database)
+    postgres_engine = create_engine(f'postgresql://{postgres_username}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_database}')
     data_postgres = pd.read_sql_table('transaction_data', postgres_engine) # Load PostgreSQL data
 
     # Preprocess data

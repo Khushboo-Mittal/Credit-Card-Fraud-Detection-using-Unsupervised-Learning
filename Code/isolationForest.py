@@ -14,6 +14,9 @@ def read_training_data(db):
     # Load data into Pandas DataFrames
     x_train_df = pd.DataFrame(list(x_train_collection.find()))
     x_test_df = pd.DataFrame(list(x_test_collection.find()))
+    
+    x_train_df = x_train_df.rename(str,axis="columns")
+    x_test_df = x_test_df.rename(str, axis="columns")
     x_train_np = x_train_df.values
     x_test_np = x_test_df.values
     return x_train_np, x_test_np

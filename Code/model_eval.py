@@ -32,23 +32,32 @@ from sklearn.metrics import make_scorer, silhouette_score, calinski_harabasz_sco
 # from clusteval import dunn_index
 
 # Load test, validation, and super validation data from MongoDB
-def read_data(db):
-    # Access the collections
-    x_train_collection = db['x_train']
-    x_test_collection = db['x_test']
-    x_val_collection = db['x_val']
-    x_superval_collection = db['x_superval']
+def load_data_from_mongodb(db, collection_name):
+    # Connect to MongoDB
+    collection = db[collection_name]
+    data = collection.find_one()  # Retrieve the first document
+    if data and 'data' in data:
+        return pickle.loads(data['data'])  # Deserialize the pickled binary data
+    return None
 
-    # Load data into Pandas DataFrames
-    x_train_df = pd.DataFrame(list(x_train_collection.find()))
-    x_test_df = pd.DataFrame(list(x_test_collection.find()))
-    x_val_df = pd.DataFrame(list(x_val_collection.find()))
-    x_superval_df = pd.DataFrame(list(x_superval_collection.find()))
-    x_train_np = x_train_df.values
-    x_test_np = x_test_df.values
-    x_val_np = x_val_df.values
-    x_superval_np = x_superval_df.values
-    return x_train_np, x_test_np, x_val_np, x_superval_np
+
+# def read_data(db):
+#     data = collection.find_one()  # Find the document
+#     unpickled_data = pickle.loads(data['pickled_data'])  # Unpickle the data
+#     # Access the collections
+#     x_train_collection = db['x_train']
+#     x_test_collection = db['x_test']
+#     x_val_collection = db['x_val']
+#     x_superval_collection = db['x_superval']
+
+#     # Load data into Pandas DataFrames
+#     x_train_collection = x_train_collection.find_one()
+#     unpickle_x_train = pickle.loads(data['x_train'])
+#     x_test_df = pd.DataFrame(list(x_test_collection.find()))
+#     x_val_df = pd.DataFrame(list(x_val_collection.find()))
+#     x_superval_df = pd.DataFrame(list(x_superval_collection.find()))
+
+#     return x_train_df, x_test_df, x_val_df, x_superval_df
 
 def evaluate_test_data(X_test, model):
     # Predict labels for the test set
@@ -56,14 +65,6 @@ def evaluate_test_data(X_test, model):
     
     # Calculate accuracy score for the test set
     test_silhouette_avg = silhouette_score(X_test, pred)
-    # Calculate PCA score for the test set
-    # pca = PCA(n_components=2).fit(X_train)
-
-    # # Explained variance on validation set
-    # test_explained_variance = pca.explained_variance_ratio_.sum()
-
-    # Calculate dunn's index for test set
-    # test_dunn_index = dunn_index(X_test, pred)
 
     # Calculate Davies Bouldin index or DBI
     test_db_index = davies_bouldin_score(X_test, pred)
@@ -79,14 +80,6 @@ def evaluate_validation_data(X_val, model):
     
     # Calculate accuracy score for the validation set
     val_silhouette_avg = silhouette_score(X_val, val_pred)
-    # Calculate PCA score for the validation set
-    # pca = PCA(n_components=2).fit(X_train)
-
-    # # Explained variance on validation set
-    # val_explained_variance = pca.explained_variance_ratio_.sum()
-
-    # Calculate dunn's index for validation set
-    # val_dunn_index = dunn(X_val, val_pred)
 
     # Calculate Davies Bouldin index or DBI for the validation set
     val_db_index = davies_bouldin_score(X_val, val_pred)
@@ -96,20 +89,12 @@ def evaluate_validation_data(X_val, model):
     
     return val_silhouette_avg, val_db_index, val_ch_index, # val_explained_variance
 
-def evaluate_supervalidation_data(X_superval, y_superval, model):
+def evaluate_supervalidation_data(X_superval, model):
     # Predict labels for the supervalidation set
     superval_pred = model.predict(X_superval)
     
     # Calculate accuracy score for the supervalidation set
     superval_silhouette_avg = silhouette_score(X_superval, superval_pred)
-    # Calculate PCA score for the supervalidation set
-    # pca = PCA(n_components=2).fit(X_train)
-
-    # # Explained variance on supervalidation set
-    # superval_explained_variance = pca.explained_variance_ratio_.sum()
-
-    # Calculate dunn's index for supervalidation set
-    # superval_dunn_index = dunn(X_superval, superval_pred)
 
     # Calculate Davies Bouldin index or DBI for the supervalidation set
     superval_db_index = davies_bouldin_score(X_superval, superval_pred)
@@ -123,13 +108,31 @@ def evaluate_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     client = MongoClient(host=mongodb_host, port=mongodb_port)
     db = client[mongodb_db]
     
-    X_train, X_test, X_val, X_superval = read_data(db)
-    
+    # X_train, X_test, X_val, X_superval = read_data(db)
+    X_test = load_data_from_mongodb(db, 'x_test')
+    X_val = load_data_from_mongodb(db, 'x_val')
+    X_superval = load_data_from_mongodb(db, 'x_superval')
     
     # Ensure column names are strings for consistency
-    # X_test = X_test.rename(str, axis="columns")
-    # X_val = X_val.rename(str, axis="columns")
-    # X_superval = X_superval.rename(str, axis="columns")
+    # X_train = X_train.rename(str, axis="columns")
+    X_test = X_test.rename(str, axis="columns")
+    X_val = X_val.rename(str, axis="columns")
+    X_superval = X_superval.rename(str, axis="columns")
+    
+    X_test = X_test.select_dtypes(include=[float, int])
+    X_val = X_val.select_dtypes(include=[float, int])
+    X_superval = X_superval.select_dtypes(include=[float,int])
+    
+    # X_train = X_train.drop(columns=["_id"])
+    # X_test = X_test.drop(columns=["_id"])
+    # X_val = X_val.drop(columns=["_id"])
+    # X_superval = X_superval.drop(columns=["_id"])
+    
+    # X_train['_id'] = X_train['_id'].astype(str)
+    # X_test['_id'] = X_test['_id'].astype(str)
+    # X_val['_id'] = X_val['_id'].astype(str)
+    # X_superval['_id'] = X_superval['_id'].astype(str)
+
 
     # Load the best model from the pickle file
     with open(model_path, 'rb') as f:

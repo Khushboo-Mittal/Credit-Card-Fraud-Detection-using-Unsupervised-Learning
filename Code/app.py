@@ -42,7 +42,7 @@ from model_predict import predict_output  # Importing the predict_output functio
 st.set_page_config(page_title="Credit Card Prediction", page_icon=":chart_with_upwards_trend:", layout="centered")
 
 # Adding a heading to the web app
-st.markdown("<h1 style='text-align: center; color: white;'>Churn Prediction </h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>Credit Card Prediction </h1>", unsafe_allow_html=True)
 st.divider()
 
 # Declaring session states(streamlit variables) for saving the path throught page reloads
@@ -189,7 +189,7 @@ with tab3:
     st.divider()
     
     # Displaying the metrics for the Bagging Model
-    st.markdown("<h3 style='text-align: center; color: white;'>Bagging Model</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: white;'>Isolation Forest Model</h3>", unsafe_allow_html=True)
     st.divider()
     
     # Get the model test, validation, and super validation metrics
@@ -404,9 +404,9 @@ with tab4:
         
         # Mapping model names to their respective paths
         model_path_mapping = {
-            "IsolationForest": st.session_state.isolation_forest_path,
-            "LocalOutlier factor": st.session_state.local_outlier_factor__path,
-            "One-class SVM": st.session_state.oneClass_model_path
+            "IsolationForest": st.session_state.isolation_forest_path
+            # "LocalOutlier factor": st.session_state.local_outlier_factor__path,
+            # "One-class SVM": st.session_state.oneClass_model_path
         }
         transaction_date = st.date_input(label="Transaction date",
                                         format="DD-MM-YYYY",
