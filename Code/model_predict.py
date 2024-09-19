@@ -57,7 +57,7 @@ def preprocess_input_data(transaction_date, transaction_amount, merchant_categor
     # Preprocess categorical and numerical columns
     numerical_cols = [
         'transaction_amount', 'cardholder_age', 'account_balance', 'calander_income', 'transaction_year',
-        'transaction_month', 'transaction_day'
+        'transaction_month', 'transaction_day','transaction_description'
     ]
     
     categorical_cols = [

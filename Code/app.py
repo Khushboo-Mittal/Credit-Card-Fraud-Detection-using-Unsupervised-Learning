@@ -19,6 +19,12 @@
         # Environment:     
             # Python 3.11.5
             # Streamlit 1.36.0
+            
+            
+#to run: streamlit run Code/app.py
+
+
+
 
 import streamlit as st  # Used for creating the web app
 import datetime  # Used for setting default value in streamlit form
@@ -56,7 +62,7 @@ if "postgres_port" not in st.session_state:
     st.session_state.postgres_port = "5432"
     
 if "postgres_database" not in st.session_state:
-    st.session_state.postgres_database = "churn_prediction"
+    st.session_state.postgres_database = "Mock_Data"
 
 
 # MongoDB
