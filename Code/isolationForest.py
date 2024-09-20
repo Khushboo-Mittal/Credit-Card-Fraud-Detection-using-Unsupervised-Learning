@@ -1,3 +1,24 @@
+# META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+    # Developer details: 
+        # Name: Harshita and Prachi
+        # Role: Architects
+        # Code ownership rights: Mohini T and Vansh R
+    # Version:
+        # Version: V 1.0 (20 September 2024)
+            # Developers: Harshita and Prachi
+            # Unit test: Pass
+            # Integration test: Pass
+     
+    # Description: This code snippet creates the Isolation Forest Model to train, evaluate, and predict if credit card is fraudulent according to Transaction behaviour.
+
+# CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+    # Dependency: 
+        # Environment:     
+            # Python 3.11.5
+            # Streamlit 1.36.0
+            
 # Import necessary libraries
 import pandas as pd
 import numpy as np
@@ -54,10 +75,10 @@ def evaluate_model(model, X_train):
         # Predict the training labels using the trained model
         y_pred_train = model.predict(X_train)
         
-        # Calculate the accuracy of the model on the training data
+        # Calculate the silhouette score of the model on the training data
         superval_silhouette_avg = silhouette_score(X_train, y_pred_train)
         
-        # Return the training accuracy
+        # Return the silhouette score
         return superval_silhouette_avg
     
     except Exception as e:
@@ -73,7 +94,7 @@ def save_model(model, model_path):
 
 def train_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     
-    # Connect to the Redis database
+    # Connect to the MongoDB database
     client = MongoClient(host=mongodb_host, port=mongodb_port)
     db = client[mongodb_db]
     
@@ -83,7 +104,6 @@ def train_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     
     # Perform hyperparameter tuning to find the best model
     best_model, best_params = perform_hyperparameter_tuning(X_train)
-    
    
     # Fit the best model to the training data
     best_model.fit(X_train)
@@ -100,6 +120,6 @@ def train_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     # Print a message indicating the model training is completed
     print('Model training completed successfully!')
     
-    # Return the training accuracy
+    # Return the silhouette score and best parameters
     return superval_silhouette_avg, best_params
 

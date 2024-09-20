@@ -1,17 +1,17 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
-        # Name: Prachi and Harshita
+        # Name: Harshita and Prachi
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
-        # Version: V 1.0 (17 September 2024)
-            # Developers: Prachi and Harshita
+        # Version: V 1.0 (20 September 2024)
+            # Developers: Harshita and Prachi
             # Unit test: Pass
             # Integration test: Pass
      
-    # Description: This code snippet creates a web app using Streamlit to train, evaluate, and predict churn using
-    # three different ensemble models: Bagging, Voting Classifier, and Stacking Classifier.
+     # Description: This code snippet creates a web app to train, evaluate, and predict if credit card is fraudulent according to Transaction behaviour using
+    # three different Outlier Detection models (Unsupervised Learning): IsolationForest, LocalOutlierFactor, One-Class SVM.
 
 # CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -22,8 +22,6 @@
             
             
 #to run: streamlit run Code/app.py
-
-
 
 
 import streamlit as st  # Used for creating the web app
@@ -39,10 +37,10 @@ from model_predict import predict_output  # Importing the predict_output functio
 
 
 # Setting the page configuration for the web app
-st.set_page_config(page_title="Credit Card Prediction", page_icon=":chart_with_upwards_trend:", layout="centered")
+st.set_page_config(page_title="Credit Card Fraud Prediction", page_icon=":chart_with_upwards_trend:", layout="centered")
 
 # Adding a heading to the web app
-st.markdown("<h1 style='text-align: center; color: white;'>Credit Card Prediction </h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>Credit Card Fraud Prediction </h1>", unsafe_allow_html=True)
 st.divider()
 
 # Declaring session states(streamlit variables) for saving the path throught page reloads
@@ -151,8 +149,7 @@ with tab2:
     # Training the Models
     selected_model = st.selectbox("Select Model", ["IsolationForest", "LocalOutlier factor", "One-class SVM"])
     if st.button("Train Model", use_container_width=True):  # Adding a button to trigger model training
-        with st.status("Training model..."):  # Displaying a status message while training the model
-            
+        with st.spinner("Training model..."):  # Displaying a status message while training the model
             st.write("Ingesting data...")  # Displaying a message for data ingestion
             ingest_data(st.session_state.master_data_path, st.session_state.postgres_username, st.session_state.postgres_password, st.session_state.postgres_host, st.session_state.postgres_port, st.session_state.postgres_database)  # Calling the ingest_data function
             st.write("Data Ingested Successfully! ✅")  # Displaying a success message
@@ -178,7 +175,7 @@ with tab2:
             st.write("Model Trained Successfully! ✅")  # Displaying a success message
         
         # Displaying the training accuracy
-        st.success(f"{selected_model} Model Successfully trained with training accuracy: {silhouette_avg:.5f}")
+        st.success(f"{selected_model} Model Successfully trained with average silhouette score: {silhouette_avg:.5f}")
         st.write(f"Best Hyperparameters")
         st.text(best_params)
 
@@ -225,8 +222,6 @@ with tab3:
         st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(f"Silhouette avg: {isolation_superval_silhouette_avg:.5f}"), unsafe_allow_html=True)
         st.write(" ")
-        # st.markdown(markdown_top_center(f"DUNN index: {isolation_superval_dunn_index:.5f}"), unsafe_allow_html=True)
-        # st.write(" ")
         st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
         st.markdown(markdown_top_center(isolation_superval_db_index), unsafe_allow_html=True)
         st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
@@ -280,7 +275,7 @@ with tab4:
         cardholder_gender = st.selectbox(label="Cardholder Gender",
                                       options= ["Male", "Female", "Other"])
         
-        transaction_description = st.text_input(label="Transaction description")
+        transaction_description = st.text_input(label="Transaction description", value="Nunc purus")
         
         account_balance = st.number_input(label="Account Balance",
                                            min_value=100,

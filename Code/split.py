@@ -1,17 +1,17 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-    # Developer details: 
-        # Name: Prachi and Harshita
+     # Developer details: 
+        # Name: Harshita and Prachi
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
-        # Version: V 1.0 (17 September 2024)
-            # Developers: Prachi and Harshita
+        # Version: V 1.0 (20 September 2024)
+            # Developers: Harshita and Prachi
             # Unit test: Pass
             # Integration test: Pass
      
-    # Description: This code snippet preprocesses input data for a machine learning model by scaling
-    # numerical columns, encoding categorical columns, and extracting date components for further analysis.
+    # Description: This code snippet contains functions to split preprocessed data into test, validation,
+    # and super validation and store it in a MongoDB database.
         # MongoDB: Yes
 
 # CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -19,16 +19,13 @@
     # Dependency: 
         # Environment:     
             # Python 3.11.5
-            # Pandas 2.2.2
-            # Scikit-learn 1.5.0
 
+
+# Importing necessary .py files and functions
 import pandas as pd                                     # For data manipulation
 from sklearn.model_selection import train_test_split    # To split data into train, test, validation, and super validation sets
 from pymongo import MongoClient                         # For using MongoDB as a cache to store the split data
 import pickle                                           # For serializing and deserializing data for storage in Redis
-
-# Importing necessary .py files and functions
-from preprocess import load_and_preprocess_data # For preprocessing data
 
 def connect_to_mongodb(host, port, db_name):
     # Connect to MongoDB
@@ -42,11 +39,11 @@ def drop_transaction_id_column(preprocessed_data):
     return preprocessed_data  # Return data without 'transaction_id' column
 
 def save_preprocessed_data(preprocessed_data):
-    # Save merged data as csv for inspection
+    # Save preprocessed data as csv for inspection
     preprocessed_data.to_csv('preprocessed_data.csv', index=False)  # Save to CSV
 
 def split(preprocessed_data):
-    # Split features and target (assuming 'churn' is the target column)
+    # Split features and target (no target column here as it's for unsupervised learning)
     X = preprocessed_data[:] # Features
     
     # Split the data into train, test, validation, and super validation sets
@@ -69,11 +66,10 @@ def save_split_data(db, X_train, X_test, X_val, X_superval):
 
 def split_data(mongodb_host, mongodb_port, mongodb_db, data_postgres_processed):
     
-    # Connect to Redis
+    # Connect to MongoDB
     db = connect_to_mongodb(mongodb_host, mongodb_port, mongodb_db)
    
-    
-    # Drop 'customer_id' column
+    # Drop 'transaction_id' column
     preprocessed_data = drop_transaction_id_column(data_postgres_processed)
     
     # Uncomment the below line to see how the merged processed data looks

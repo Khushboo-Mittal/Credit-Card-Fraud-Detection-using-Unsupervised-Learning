@@ -1,15 +1,15 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-    # Developer details: 
-        # Name: Prachi and Harshita
+     # Developer details: 
+        # Name: Harshita and Prachi
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
-        # Version: V 1.0 (11 July 2024)
-            # Developers: Prachi and Harshita
+        # Version: V 1.0 (20 September 2024)
+            # Developers: Harshita and Prachi
             # Unit test: Pass
             # Integration test: Pass
-     
+            
     # Description: This code snippet preprocesses input data for a machine learning model by scaling numerical
     # columns, encoding categorical columns, and extracting date components for further analysis.
         # PostgreSQL: Yes
@@ -72,10 +72,9 @@ def preprocess_input_data(transaction_date, transaction_amount, merchant_categor
     for col in categorical_cols:
         data[col] = encoder.fit_transform(data[col]) # Encode categorical columns
 
-    # Rejoin transaction_id and scaled numerical columns
+    # Rejoin scaled numerical columns
     data = data.drop(columns=numerical_cols) # Drop original numerical columns
     data = pd.concat([data, temp_data], axis=1) # Concatenate scaled numerical columns back
-    # data['transaction_id'] = transaction_id # Reassign transaction_id
     
     return data
 

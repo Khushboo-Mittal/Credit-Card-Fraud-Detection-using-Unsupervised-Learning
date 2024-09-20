@@ -1,17 +1,17 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-    # Developer details: 
-        # Name: Prachi and Harshita
+     # Developer details: 
+        # Name: Harshita and Prachi
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
-        # Version: V 1.0 (17 September 2024)
-            # Developers: Prachi and Harshita
+        # Version: V 1.0 (20 September 2024)
+            # Developers: Harshita and Prachi
             # Unit test: Pass
             # Integration test: Pass
      
-    # Description: This code snippet contains utility functions to evaluate a model using test, validation,
-    # and super validation data stored in a MongoDB database.
+    # Description: This code snippet preprocesses the data for a machine learning model by scaling
+    # numerical columns, encoding categorical columns, and extracting date components for before feeding it to train the model
         # PostgreSQL: Yes
 
 # CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -25,7 +25,6 @@
 import pandas as pd     # Importing pandas for data manipulation
 from sqlalchemy import create_engine
 from sklearn.preprocessing import StandardScaler, LabelEncoder  # Importing tools for data preprocessing
-import db_utils                                                 # Importing utility functions for database operations
 
 def preprocess_postgres_data(data):
     # Separate transaction_id

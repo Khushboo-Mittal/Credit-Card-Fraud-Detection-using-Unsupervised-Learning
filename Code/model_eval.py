@@ -1,18 +1,18 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-    # Developer details: 
-        # Name: Mohini T and Vansh R
+     # Developer details: 
+        # Name: Harshita and Prachi
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
-        # Version: V 1.0 (11 July 2024)
-            # Developers: Mohini T and Vansh R
+        # Version: V 1.0 (20 September 2024)
+            # Developers: Harshita and Prachi
             # Unit test: Pass
             # Integration test: Pass
      
     # Description: This code snippet contains utility functions to evaluate a model using test, validation,
-    # and super validation data stored in a Redis database.
-        # Redis: Yes
+    # and super validation data stored in a MongoDB database.
+        # MongoDB: Yes
      
 # CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -86,13 +86,11 @@ def evaluate_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     client = MongoClient(host=mongodb_host, port=mongodb_port)
     db = client[mongodb_db]
     
-    # X_train, X_test, X_val, X_superval = read_data(db)
     X_test = load_data_from_mongodb(db, 'x_test')
     X_val = load_data_from_mongodb(db, 'x_val')
     X_superval = load_data_from_mongodb(db, 'x_superval')
     
     # Ensure column names are strings for consistency
-    # X_train = X_train.rename(str, axis="columns")
     X_test = X_test.rename(str, axis="columns")
     X_val = X_val.rename(str, axis="columns")
     X_superval = X_superval.rename(str, axis="columns")
