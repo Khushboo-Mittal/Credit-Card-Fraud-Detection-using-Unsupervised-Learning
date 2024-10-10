@@ -51,9 +51,11 @@ def perform_hyperparameter_tuning(X_train):
     
     # Initialize an IsolationForest Ensemble
     model = IsolationForest(random_state=42)
+    
     def silhouette_scorer(estimator, X):
         cluster_labels = estimator.fit_predict(X)
         return silhouette_score(X,cluster_labels)
+    
     # Initialize a GridSearchCV to search for the best hyperparameters
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, 
                                cv=2, n_jobs=-1, verbose=2,scoring=silhouette_scorer)

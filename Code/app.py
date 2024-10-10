@@ -1,16 +1,16 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
-        # Name: Harshita, Prachi and Khushboo
+        # Name: Harshita and Prachi
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
         # Version: V 1.0 (20 September 2024)
-            # Developers: Harshita, Prachi and Khushboo
+            # Developers: Harshita and Prachi
             # Unit test: Pass
             # Integration test: Pass
      
-    # Description: This code snippet creates a web app to train, evaluate, and predict if credit card is fraudulent according to Transaction behaviour using
+     # Description: This code snippet creates a web app to train, evaluate, and predict if credit card is fraudulent according to Transaction behaviour using
     # three different Outlier Detection models (Unsupervised Learning): IsolationForest, LocalOutlierFactor, One-Class SVM.
 
 # CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -20,7 +20,7 @@
             # Python 3.11.5
             # Streamlit 1.36.0
             
-#to activate virtual environment: .\venv\Scripts\Activate.ps1
+            
 #to run: streamlit run Code/app.py
 
 
@@ -31,8 +31,8 @@ import datetime  # Used for setting default value in streamlit form
 from ingest import ingest_data  # Importing the ingest_data function from ingest.py
 from preprocess import load_and_preprocess_data  # Importing the load_and_preprocess_data function from preprocess.py
 from split import split_data  # Importing the split_data function from split.py
-from oneClassSVM import train_model as train_model_oneClassSVM  # Importing the train_model function for One-Class SVM
 from isolationForest import train_model as train_model_isolationForest # Importing the train_model function from model_training.py
+from oneClassSVM import train_model as train_model_oneClassSvm # Importing the train_model function from model_training.py
 from model_eval import evaluate_model  # Importing the evaluate_model function from model_eval.py
 from model_predict import predict_output  # Importing the predict_output function from model_predict.py
 
@@ -172,7 +172,7 @@ with tab2:
             # elif selected_model == "LocalOutlier factor":
             #     training_accuracy, best_params = train_model_localOutlierFactor(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.local_outlier_factor_path)
             elif selected_model == "One-class SVM":
-                training_accuracy, best_params = train_model_oneClassSVM(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.oneclass_svm_path)
+                silhouette_avg, best_params = train_model_oneClassSvm(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.oneclass_svm_path)
             st.write("Model Trained Successfully! ✅")  # Displaying a success message
         
         # Displaying the training accuracy
@@ -229,7 +229,7 @@ with tab3:
         st.markdown(markdown_top_center(isolation_superval_ch_index), unsafe_allow_html=True)
         
     st.divider()
-    
+        
     # Displaying the metrics for the One-Class SVM Model
     st.markdown("<h3 style='text-align: center; color: white;'>One-Class SVM Model</h3>", unsafe_allow_html=True)
     st.divider()
@@ -270,7 +270,6 @@ with tab3:
     
     st.divider()
 
-    
       
 # Tab for Model Prediction
 with tab4:
@@ -289,7 +288,7 @@ with tab4:
         model_path_mapping = {
             "IsolationForest": st.session_state.isolation_forest_path,
             # "LocalOutlier factor": st.session_state.local_outlier_factor__path,
-            "One-class SVM": st.session_state.oneClass_model_path
+            "One-class SVM": st.session_state.oneclass_svm_path
         }
         transaction_date = st.date_input(label="Transaction date",
                                         format="DD-MM-YYYY",

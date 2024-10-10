@@ -90,9 +90,7 @@ def save_model(model, model_path):
         # Serialize the model and save it to the file
         pickle.dump(model, f)
 
-def train_model(mongodb_host, mongodb_port, mongodb_db):
-    # Access the One-Class SVM model path from Streamlit session state
-    model_path = st.session_state.oneclass_svm_path  # Get the path from session state
+def train_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     
     # Connect to the MongoDB database
     client = MongoClient(host=mongodb_host, port=mongodb_port)

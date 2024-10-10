@@ -28,7 +28,6 @@ def ingest_data(data_path, postgres_username, postgres_password, postgres_host, 
     
     data = pd.read_csv(data_path) # Read data from CSV file
 
-    # Separate data for PostgreSQL and Cassandra (will have to change this)
     postgres_data = data[['transaction_id', 'transaction_date', 'transaction_amount', 'merchant_category', 'card_type', 'transaction_location',
                           'cardholder_age', 'cardholder_gender', 'transaction_description', 'account_balance', 'calander_income']]
     
