@@ -1,16 +1,16 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
-        # Name: Harshita and Prachi
+        # Name: Harshita, Prachi and Khushboo
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
         # Version: V 1.0 (20 September 2024)
-            # Developers: Harshita and Prachi
+            # Developers: Harshita, Prachi and Khushboo
             # Unit test: Pass
             # Integration test: Pass
      
-     # Description: This code snippet creates a web app to train, evaluate, and predict if credit card is fraudulent according to Transaction behaviour using
+    # Description: This code snippet creates a web app to train, evaluate, and predict if credit card is fraudulent according to Transaction behaviour using
     # three different Outlier Detection models (Unsupervised Learning): IsolationForest, LocalOutlierFactor, One-Class SVM.
 
 # CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -20,7 +20,7 @@
             # Python 3.11.5
             # Streamlit 1.36.0
             
-            
+#to activate virtual environment: .\venv\Scripts\Activate.ps1
 #to run: streamlit run Code/app.py
 
 
@@ -31,6 +31,7 @@ import datetime  # Used for setting default value in streamlit form
 from ingest import ingest_data  # Importing the ingest_data function from ingest.py
 from preprocess import load_and_preprocess_data  # Importing the load_and_preprocess_data function from preprocess.py
 from split import split_data  # Importing the split_data function from split.py
+from oneClassSVM import train_model as train_model_oneClassSVM  # Importing the train_model function for One-Class SVM
 from isolationForest import train_model as train_model_isolationForest # Importing the train_model function from model_training.py
 from model_eval import evaluate_model  # Importing the evaluate_model function from model_eval.py
 from model_predict import predict_output  # Importing the predict_output function from model_predict.py
@@ -84,7 +85,7 @@ if "local_outlier_factor_path" not in st.session_state:
     st.session_state.local_outlier_factor_model_path = "local_outlier_factor_model.pkl"
     
 if "oneclass_svm_path" not in st.session_state:
-    st.session_state.oneclass_svm_model_path = "oneclass_svm_model.pkl"
+    st.session_state.oneclass_svm_path = "oneclass_svm_model.pkl"
 
 # Creating tabs for the web app.
 tab1, tab2, tab3, tab4 = st.tabs(["Model Config","Model Training","Model Evaluation", "Model Prediction"])
@@ -135,7 +136,7 @@ with tab1:
             st.session_state.master_data_path = st.text_input("Master Data Path", st.session_state.master_data_path)
             st.session_state.isolation_forest_path = st.text_input("Isolation Forest Model Path", st.session_state.isolation_forest_path)
             # st.session_state.local_outlier_factor_path = st.text_input("Local Outlier Factor Model Path", st.session_state.local_outlier_factor_path)
-            # st.session_state.oneclass_svm_path = st.text_input("One-Class SVM Model Path", st.session_state.oneclass_svm_path)
+            st.session_state.oneclass_svm_path = st.text_input("One-Class SVM Model Path", st.session_state.oneclass_svm_path)
             
         if st.form_submit_button(label="Save Config", use_container_width=True):
             st.write("Configurations Saved Successfully! ✅")
@@ -170,8 +171,8 @@ with tab2:
                 silhouette_avg, best_params = train_model_isolationForest(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.isolation_forest_path)
             # elif selected_model == "LocalOutlier factor":
             #     training_accuracy, best_params = train_model_localOutlierFactor(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.local_outlier_factor_path)
-            # elif selected_model == "One-class SVM":
-            #     training_accuracy, best_params = train_model_oneClassSVM(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.oneclass_svm_path)
+            elif selected_model == "One-class SVM":
+                training_accuracy, best_params = train_model_oneClassSVM(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.oneclass_svm_path)
             st.write("Model Trained Successfully! ✅")  # Displaying a success message
         
         # Displaying the training accuracy
@@ -229,6 +230,47 @@ with tab3:
         
     st.divider()
     
+    # Displaying the metrics for the One-Class SVM Model
+    st.markdown("<h3 style='text-align: center; color: white;'>One-Class SVM Model</h3>", unsafe_allow_html=True)
+    st.divider()
+
+    # Get the model test, validation, and super validation metrics for One-Class SVM
+    oneclass_svm_test_silhouette_avg, oneclass_svm_test_db_index, oneclass_svm_test_ch_index, oneclass_svm_val_silhouette_avg, oneclass_svm_val_db_index, oneclass_svm_val_ch_index, oneclass_svm_superval_silhouette_avg, oneclass_svm_superval_db_index, oneclass_svm_superval_ch_index = evaluate_model(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.oneclass_svm_path)
+    
+    # Display model metrics in three columns for One-Class SVM
+    oneclass_svm_col1, oneclass_svm_col2, oneclass_svm_col3 = st.columns(3)
+    
+    with oneclass_svm_col1:
+        # Displaying metrics for test, validation, and super validation sets
+        st.markdown(markdown_top_center("Test Metrics:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {oneclass_svm_test_silhouette_avg:.5f}"), unsafe_allow_html=True)
+        st.write(" ")
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(oneclass_svm_test_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(oneclass_svm_test_ch_index), unsafe_allow_html=True)
+
+    with oneclass_svm_col2:
+        st.markdown(markdown_top_center("Validation Metrics:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {oneclass_svm_val_silhouette_avg:.5f}"), unsafe_allow_html=True)
+        st.write(" ")
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(oneclass_svm_val_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(oneclass_svm_val_ch_index), unsafe_allow_html=True)
+
+    with oneclass_svm_col3:
+        st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {oneclass_svm_superval_silhouette_avg:.5f}"), unsafe_allow_html=True)
+        st.write(" ")
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(oneclass_svm_superval_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(oneclass_svm_superval_ch_index), unsafe_allow_html=True)
+    
+    st.divider()
+
+    
       
 # Tab for Model Prediction
 with tab4:
@@ -245,9 +287,9 @@ with tab4:
         
         # Mapping model names to their respective paths
         model_path_mapping = {
-            "IsolationForest": st.session_state.isolation_forest_path
+            "IsolationForest": st.session_state.isolation_forest_path,
             # "LocalOutlier factor": st.session_state.local_outlier_factor__path,
-            # "One-class SVM": st.session_state.oneClass_model_path
+            "One-class SVM": st.session_state.oneClass_model_path
         }
         transaction_date = st.date_input(label="Transaction date",
                                         format="DD-MM-YYYY",
