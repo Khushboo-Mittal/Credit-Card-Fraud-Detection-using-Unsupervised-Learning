@@ -88,14 +88,5 @@ def predict_output(transaction_date, transaction_amount, merchant_category, card
     data = preprocess_input_data(transaction_date, transaction_amount, merchant_category, card_type, transaction_location,
                           cardholder_age, cardholder_gender, transaction_description, account_balance, calander_income)
     
-    
-    # Predict output
-    try:
-        if 'local_outlier_factor_model.pkl' in model_path:
-            prediction = model.fit_predict(data.values)
-        else:
-            prediction = model.predict(data.values)  # Make a prediction (assume only one prediction is made)
-        return f"Model Prediction: {prediction}"  # Return the prediction
-    except Exception as e:
-        print("Error during prediction:", e)  # Print any error that occurs
-        return None
+    prediction = model.predict(data.values)  # Make a prediction (assume only one prediction is made)
+    return f"Model Prediction: {prediction}"  # Return the prediction
