@@ -21,10 +21,10 @@ def perform_hyperparameter_tuning_lof(X_train):
         'contamination': [0.01, 0.05, 0.1]
     }
     
-    model = LocalOutlierFactor()
+    model = LocalOutlierFactor(novelty=True)
 
     def silhouette_scorer(estimator, X):
-        cluster_labels = estimator.fit_predict(X)
+        cluster_labels = estimator.predict(X)
         return silhouette_score(X, cluster_labels)
 
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, 
@@ -39,13 +39,10 @@ def perform_hyperparameter_tuning_lof(X_train):
     return best_model, grid_search.best_params_
 
 def evaluate_model(model, X_train):
-    try:
-        y_pred_train = model.fit_predict(X_train)
-        superval_silhouette_avg = silhouette_score(X_train, y_pred_train)
-        return superval_silhouette_avg
-    except Exception as e:
-        print("Error during model evaluation:", e)
-        return None
+
+    y_pred_train = model.predict(X_train)
+    superval_silhouette_avg = silhouette_score(X_train, y_pred_train)
+    return superval_silhouette_avg
 
 def save_model(model, model_path):
     # Open a file in write-binary mode to save the model
@@ -63,10 +60,6 @@ def train_model(mongodb_host, mongodb_port, mongodb_db,model_path):
 
     # Load the training data from MongoDB
     X_train = load_data_from_mongodb(db, 'x_train')
-    
-    if X_train is None:
-        print("No training data found.")
-        return None, None
     
     X_train = X_train.values  # Ensure it's a NumPy array
 
