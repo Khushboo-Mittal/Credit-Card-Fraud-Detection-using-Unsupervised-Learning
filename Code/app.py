@@ -33,6 +33,7 @@ from preprocess import load_and_preprocess_data  # Importing the load_and_prepro
 from split import split_data  # Importing the split_data function from split.py
 from isolationForest import train_model as train_model_isolationForest # Importing the train_model function from model_training.py
 from oneClassSVM import train_model as train_model_oneClassSvm # Importing the train_model function from model_training.py
+from localOutlierFactor import train_model as train_model_localOutlierFactor 
 from model_eval import evaluate_model  # Importing the evaluate_model function from model_eval.py
 from model_predict import predict_output  # Importing the predict_output function from model_predict.py
 
@@ -135,7 +136,7 @@ with tab1:
             
             st.session_state.master_data_path = st.text_input("Master Data Path", st.session_state.master_data_path)
             st.session_state.isolation_forest_path = st.text_input("Isolation Forest Model Path", st.session_state.isolation_forest_path)
-            # st.session_state.local_outlier_factor_path = st.text_input("Local Outlier Factor Model Path", st.session_state.local_outlier_factor_path)
+            st.session_state.local_outlier_factor_path = st.text_input("Local Outlier Factor Model Path", st.session_state.local_outlier_factor_model_path)
             st.session_state.oneclass_svm_path = st.text_input("One-Class SVM Model Path", st.session_state.oneclass_svm_path)
             
         if st.form_submit_button(label="Save Config", use_container_width=True):
@@ -169,8 +170,8 @@ with tab2:
             if selected_model == "IsolationForest":
                 # Calling the train_model function and storing the training accuracy and best hyperparameters
                 silhouette_avg, best_params = train_model_isolationForest(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.isolation_forest_path)
-            # elif selected_model == "LocalOutlier factor":
-            #     training_accuracy, best_params = train_model_localOutlierFactor(st.session_state.mongoDb_host, st.session_state.mongoDb_port, st.session_state.mongoDb_db, st.session_state.local_outlier_factor_path)
+            elif selected_model == "LocalOutlier factor":
+                silhouette_avg, best_params = train_model_localOutlierFactor(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.local_outlier_factor_path)
             elif selected_model == "One-class SVM":
                 silhouette_avg, best_params = train_model_oneClassSvm(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.oneclass_svm_path)
             st.write("Model Trained Successfully! ✅")  # Displaying a success message
@@ -187,7 +188,7 @@ with tab3:
     st.divider()
     
     # Displaying the metrics for the Bagging Model
-    st.markdown("<h3 style='text-align: center; color: white;'>Isolation Forest Model</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: black;'>Isolation Forest Model</h3>", unsafe_allow_html=True)
     st.divider()
     
     # Get the model test, validation, and super validation metrics
@@ -229,9 +230,55 @@ with tab3:
         st.markdown(markdown_top_center(isolation_superval_ch_index), unsafe_allow_html=True)
         
     st.divider()
+    
+    # Displaying the metrics for the Local Outlier Factor Model
+    st.markdown("<h3 style='text-align: center; color: black;'>Local Outlier Factor Model</h3>", unsafe_allow_html=True)
+    st.divider()
+
+    # Get the model test, validation, and super validation metrics for LOF
+    lof_test_silhouette_avg, lof_test_db_index, lof_test_ch_index, lof_val_silhouette_avg, lof_val_db_index, lof_val_ch_index, lof_superval_silhouette_avg, lof_superval_db_index, lof_superval_ch_index = evaluate_model(st.session_state.mongodb_host, st.session_state.mongodb_port, st.session_state.mongodb_db, st.session_state.local_outlier_factor_path)
+
+    # Display model metrics in three columns
+    lof_col1, lof_col2, lof_col3 = st.columns(3)
+
+    # # Helper function to center text vertically at the top using markdown
+    # def markdn f'<div style="display: flex; justify-content: center; align-items: flex-start; height: 100%;">{text}</div>'
+
+
+    # Display LOF model metrics using the same helper function to center text vertically at the top
+    with lof_col1:
+        st.markdown(markdown_top_center("Test Metrics:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {lof_test_silhouette_avg:.5f}"), unsafe_allow_html=True)
+        st.write(" ")
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(lof_test_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(lof_test_ch_index), unsafe_allow_html=True)
+
+    with lof_col2:
+        st.markdown(markdown_top_center("Validation Metrics:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {lof_val_silhouette_avg:.5f}"), unsafe_allow_html=True)
+        st.write(" ")
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(lof_val_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(lof_val_ch_index), unsafe_allow_html=True)
+
+    with lof_col3:
+        st.markdown(markdown_top_center("Super Validation Metrics:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(f"Silhouette avg: {lof_superval_silhouette_avg:.5f}"), unsafe_allow_html=True)
+        st.write(" ")
+        st.markdown(markdown_top_center("DB index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(lof_superval_db_index), unsafe_allow_html=True)
+        st.markdown(markdown_top_center("CH index:"), unsafe_allow_html=True)
+        st.markdown(markdown_top_center(lof_superval_ch_index), unsafe_allow_html=True)
+
+    st.divider()
+
+
         
     # Displaying the metrics for the One-Class SVM Model
-    st.markdown("<h3 style='text-align: center; color: white;'>One-Class SVM Model</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: black;'>One-Class SVM Model</h3>", unsafe_allow_html=True)
     st.divider()
 
     # Get the model test, validation, and super validation metrics for One-Class SVM
@@ -287,7 +334,7 @@ with tab4:
         # Mapping model names to their respective paths
         model_path_mapping = {
             "IsolationForest": st.session_state.isolation_forest_path,
-            # "LocalOutlier factor": st.session_state.local_outlier_factor__path,
+            "LocalOutlier factor": st.session_state.local_outlier_factor_path,
             "One-class SVM": st.session_state.oneclass_svm_path
         }
         transaction_date = st.date_input(label="Transaction date",

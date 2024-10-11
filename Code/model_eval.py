@@ -37,9 +37,12 @@ def load_data_from_mongodb(db, collection_name):
         return pickle.loads(data['data'])  # Deserialize the pickled binary data
     return None
 
-def evaluate_test_data(X_test, model):
+def evaluate_test_data(X_test, model,flag):
     # Predict labels for the test set
-    pred = model.predict(X_test)
+    if flag==1:
+        pred = model.fit_predict(X_test)
+    else:
+        pred = model.predict(X_test)
     
     # Calculate accuracy score for the test set
     test_silhouette_avg = silhouette_score(X_test, pred)
@@ -52,9 +55,12 @@ def evaluate_test_data(X_test, model):
     
     return test_silhouette_avg, test_db_index, test_ch_index, # test_explained_variance
 
-def evaluate_validation_data(X_val, model):
+def evaluate_validation_data(X_val, model,flag):
     # Predict labels for the validation set
-    val_pred = model.predict(X_val)
+    if flag==1:
+        val_pred = model.fit_predict(X_val)
+    else:
+        val_pred = model.predict(X_val)
     
     # Calculate accuracy score for the validation set
     val_silhouette_avg = silhouette_score(X_val, val_pred)
@@ -67,9 +73,12 @@ def evaluate_validation_data(X_val, model):
     
     return val_silhouette_avg, val_db_index, val_ch_index, # val_explained_variance
 
-def evaluate_supervalidation_data(X_superval, model):
+def evaluate_supervalidation_data(X_superval, model,flag):
     # Predict labels for the supervalidation set
-    superval_pred = model.predict(X_superval)
+    if flag==1:
+        superval_pred = model.fit_predict(X_superval)
+    else:
+        superval_pred = model.predict(X_superval)
     
     # Calculate accuracy score for the supervalidation set
     superval_silhouette_avg = silhouette_score(X_superval, superval_pred)
@@ -103,13 +112,18 @@ def evaluate_model(mongodb_host, mongodb_port, mongodb_db, model_path):
     # Load the best model from the pickle file
     with open(model_path, 'rb') as f:
         model = pickle.load(f)
+        
+    if 'local_outlier_factor_model.pkl' in model_path:
+        flag = 1
+    else:
+        flag=0
 
     # Evaluate the model on test data
-    test_silhouette_avg, test_db_index, test_ch_index = evaluate_test_data(X_test, model)
+    test_silhouette_avg, test_db_index, test_ch_index = evaluate_test_data(X_test, model,flag)
     # Evaluate the model on validation data
-    val_silhouette_avg, val_db_index, val_ch_index = evaluate_validation_data(X_val, model)
+    val_silhouette_avg, val_db_index, val_ch_index = evaluate_validation_data(X_val, model,flag)
     # Evaluate the model on super validation data
-    superval_silhouette_avg, superval_db_index, superval_ch_index = evaluate_supervalidation_data(X_superval, model)
+    superval_silhouette_avg, superval_db_index, superval_ch_index = evaluate_supervalidation_data(X_superval, model,flag)
     
     # Return evaluation metrics for test, validation, and super validation data
     return test_silhouette_avg,  test_db_index, test_ch_index, val_silhouette_avg, val_db_index, val_ch_index, superval_silhouette_avg, superval_db_index, superval_ch_index
