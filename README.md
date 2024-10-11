@@ -29,14 +29,14 @@ Note: The dataset consists of 1000 samples, which may lead to potential overfitt
 
 ## Program Flow
 1.	**db_utils:** This code snippet contains utility functions to connect to PostgreSQL database, create tables, and insert data into them.
-2.	**Data Ingestion:** This code snippet ingests transaction data from a CSV file, preprocesses it, and stores it in PostgreSQL database. [ingest.py]
-3.	**Data Preprocessing:** This code snippet preprocesses input data for a machine learning model by scaling numerical columns, encoding categorical columns, and extracting date components for further analysis [preprocess.py]
-4.	**Data Splitting:** This code snippet contains functions to split preprocessed data into test, validation, and super validation and store it in a MongoDB database. [split.py]
-5.	**Model Training:** This is where IsolationForest, LocalOutlierFactor, and OneClassSVM models, using the training data, are trained and stored in a MongoDB database. [isolationForestpy, localOutlierFactor.py, oneClassSvm.py]
-6.	**Model Evaluation:** This code snippet contains utility functions to evaluate a model using test, validation, and super validation data stored in a MongoDB database. [model_eval.py]
-7.	**Model Prediction:** This code snippet predict credit card fraudulent status based on user input data.  [model_predict.py]
-8.	**Web Application:** This code snippet creates a web app using Streamlit to train, evaluate, and predict fraudulent credit card using three different unsupervised learning models: IsolationForest, LocalOutlierFactor, and OneClassSVM. [app.py]
+2.	**Data Ingestion:** This code snippet ingests transaction data from a CSV file, preprocesses it, and stores it in PostgreSQL database. [`ingest.py`]
+3.	**Data Preprocessing:** This code snippet preprocesses input data for a machine learning model by scaling numerical columns, encoding categorical columns, and extracting date components for further analysis [`preprocess.py`]
+4.	**Data Splitting:** This code snippet contains functions to split preprocessed data into test, validation, and super validation and store it in a MongoDB database. [`split.py`]
+5.	**Model Training:** This is where IsolationForest, LocalOutlierFactor, and OneClassSVM models, using the training data, are trained and stored in a MongoDB database. [`isolationForestpy`, `localOutlierFactor.py`, `oneClassSvm.py`]
+6.	**Model Evaluation:** This code snippet contains utility functions to evaluate a model using test, validation, and super validation data stored in a MongoDB database. [`model_eval.py`]
+7.	**Model Prediction:** This code snippet predict credit card fraudulent status based on user input data.  [`model_predict.py`]
+8.	**Web Application:** This code snippet creates a web app using Streamlit to train, evaluate, and predict fraudulent credit card using three different unsupervised learning models: IsolationForest, LocalOutlierFactor, and OneClassSVM. [`app.py`]
 
 ## Steps to Run
-1.	Install the necessary packages: pip install -r requirements.txt
-2.	Run the Streamlit web application: streamlit run Code/app.py
+1.	Install the necessary packages: `pip install -r requirements.txt`
+2.	Run the Streamlit web application: `streamlit run Code/app.py`
