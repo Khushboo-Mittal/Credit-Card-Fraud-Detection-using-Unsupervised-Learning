@@ -3,9 +3,8 @@
     # Developer details: 
         # Name: Khushboo Mittal
         # Role: Architects
-        # Code ownership rights: Mohini T and Vansh R
     # Version:
-        # Version: V 1.0 (20 September 2024)
+        # Version: V 1.0 (11 October 2024)
             # Developers: Khushboo Mittal
             # Unit test: Pass
             # Integration test: Pass

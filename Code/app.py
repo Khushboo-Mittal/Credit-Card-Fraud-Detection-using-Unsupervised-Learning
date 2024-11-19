@@ -1,12 +1,12 @@
 # META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # Developer details: 
-        # Name: Harshita and Prachi
+        # Name: Harshita Jangde, Prachi Tavse, Khushboo Mittal, and Tanisha Priya
         # Role: Architects
         # Code ownership rights: Mohini T and Vansh R
     # Version:
         # Version: V 1.0 (20 September 2024)
-            # Developers: Harshita and Prachi
+            # Developers: Harshita Jangde, Prachi Tavse, Khushboo Mittal, and Tanisha Priya
             # Unit test: Pass
             # Integration test: Pass
      
@@ -338,7 +338,6 @@ with tab4:
             "One-class SVM": st.session_state.oneclass_svm_path
         }
         transaction_date = st.date_input(label="Transaction date",
-                                        format="DD-MM-YYYY",
                                         value=datetime.date(2023, 6, 30))
                                         
         transaction_amount = st.number_input(label="Transaction amount",

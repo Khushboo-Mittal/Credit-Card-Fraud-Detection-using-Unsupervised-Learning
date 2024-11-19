@@ -1,3 +1,24 @@
+# META DATA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+    # Developer details: 
+        # Name: Tanisha Priya
+        # Role: Architects
+    # Version:
+        # Version: V 1.0 (11 October 2024)
+            # Developers: Tanisha Priya
+            # Unit test: Pass
+            # Integration test: Pass
+     
+    # Description: This code snippet creates the Local Outlier Factor Model to train, evaluate, and predict if credit card is fraudulent according to Transaction behaviour.
+
+# CODE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+    # Dependency: 
+        # Environment:     
+            # Python 3.11.5
+            # Streamlit 1.36.0
+            
+# Import necessary libraries
 import pandas as pd
 import numpy as np
 from sklearn.neighbors import LocalOutlierFactor
