@@ -8,14 +8,17 @@ This project demonstrates how to use unsupervised learning algorithms to detect 
 
 ## Algorithms Used
 The following unsupervised learning models are utilized for fraud detection:
+
 1. Isolation Forest
 - **Purpose:** Detect outliers in high-dimensional datasets.
 - **How it works:** Constructs an ensemble of decision trees that isolate anomalies by randomly selecting features and splitting the data.
 - **Output:** -1 for anomalies, 1 for normal transactions.
+
 2. Local Outlier Factor (LOF)
 - **Purpose:** Identify localized anomalies by measuring the density deviation from neighbors.
 - **How it works:** Computes LOF scores to detect data points in lower-density regions, which are outliers.
 - **Output:** -1 for outliers, 1 for inliers.
+
 3. One-Class SVM
 - **Purpose:** Identify anomalies in datasets with only normal instances available for training.
 - **How it works:** Fits a hyperplane to separate normal data from the origin, classifying data points outside the boundary as anomalies.
