@@ -1,9 +1,7 @@
-# Unsupervised Learning for Fraudulent Credit Card Detection
+# DIY Unsupervised Learning Prompts for Fraudulent Credit Card Detection
 
 ## Business Case
 Credit card fraud continues to be a major issue in the financial sector, resulting in billions of dollars in losses annually. Traditional fraud detection systems often face challenges in identifying rare fraudulent transactions, as fraud cases are typically outliers in transaction data. With the surge in digital payments and the increasing volume of transactions, conventional methods struggle to keep pace. To address this, more advanced approaches are needed—ones that can detect anomalies in data without relying on labeled fraud cases. These solutions are particularly valuable in scenarios where only legitimate transaction data is available for training, enabling the detection of novel fraud patterns that have not been encountered before.
-
-# DIY Unsupervised Learning Prompts
 
 ## Introduction to Unsupervised Learning
 
