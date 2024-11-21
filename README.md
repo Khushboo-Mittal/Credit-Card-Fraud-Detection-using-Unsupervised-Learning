@@ -84,5 +84,22 @@ Note: The dataset consists of 1000 samples, which may lead to potential overfitt
 8.	**Web Application:** This code snippet creates a web app using Streamlit to train, evaluate, and predict fraudulent credit card using three different unsupervised learning models: IsolationForest, LocalOutlierFactor, and OneClassSVM. [`app.py`]
 
 ## Steps to Run
-1.	Install the necessary packages: `pip install -r requirements.txt`
-2.	Run the Streamlit web application: `streamlit run Code/app.py`
+1. **Ensure the databases (MongoDB, PostgreSQL) are running:**
+
+    - **PostgreSQL Setup:**
+     1. Install PostgreSQL: Follow the installation guide based on your operating system from the official [PostgreSQL Documentation](https://www.postgresql.org/docs/).
+     2. Open **pgAdmin** and connect to your PostgreSQL server.
+     3. Create a database `Mock_Data` in **pgAdmin**:
+     4. The table transaction_data will be created automatically by the db_utils.create_postgresql_table function when you run the data ingestion script in streamlit to train model.
+     5. Connect to the database (`Mock_Data`) and verify the setup.
+
+    - **MongoDB Setup:**
+     1. Install MongoDB: Follow the installation guide for your operating system from the official [MongoDB Documentation](https://docs.mongodb.com/manual/installation/).
+     2. Open **MongoDB Compass** and connect to your MongoDB instance.
+     3. Create a database named **"1"** in MongoDB Compass.
+     4. `x_train` and other collections(like `x_val`, `x_superval`, `y_train` etc.) will get stored in the database **"1"**.
+
+
+2. **Install the necessary packages:** `pip install -r requirements.txt`
+
+3.	**Run the Streamlit web application:** `streamlit run Code/app.py`
