@@ -17,7 +17,7 @@
 
     # Dependency: 
         # Environment:     
-            # Python 3.11.5
+            # Python 3.10.8
 
 
 # Importing necessary .py files and functions

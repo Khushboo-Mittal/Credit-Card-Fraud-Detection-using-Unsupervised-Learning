@@ -17,8 +17,8 @@
 
     # Dependency: 
         # Environment:
-            # Python 3.11.5   
-            # SQLAlchemy 2.0.31
+            # Python 3.10.8
+            # SQLAlchemy 2.0.10
 
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Float, DateTime
 

@@ -15,8 +15,8 @@
 
     # Dependency: 
         # Environment:     
-            # Python 3.11.5
-            # Streamlit 1.36.0
+            # Python 3.10.8
+            # Streamlit 1.22.0
 
 # Import necessary libraries
 import pandas as pd

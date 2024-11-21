@@ -3,7 +3,6 @@
      # Developer details: 
         # Name: Harshita Jangde and Prachi Tavse
         # Role: Architects
-        # Code ownership rights: Mohini T and Vansh R
     # Version:
         # Version: V 1.0 (20 September 2024)
             # Developers: Harshita Jangde and Prachi Tavse
@@ -18,9 +17,9 @@
 
     # Dependency: 
         # Environment:
-            # Python 3.11.5   
-            # Pandas 2.2.2
-            # Scikit-learn 1.5.0
+            # Python 3.10.8   
+            # Pandas 2.0.3
+            # Scikit-learn 1.4.2
 
 # Import necessary libraries
 from pymongo import MongoClient # For connecting to MongoDB database

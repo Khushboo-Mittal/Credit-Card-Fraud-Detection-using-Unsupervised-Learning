@@ -17,8 +17,8 @@
 
     # Dependency: 
         # Environment:     
-            # Python 3.11.5
-            # Pandas 2.2.2
+            # Python 3.10.8
+            # Pandas 2.0.3
 
 import pandas as pd # Importing pandas for data manipulation
 import db_utils # Importing utility functions for database operations

@@ -17,9 +17,9 @@
 
     # Dependency: 
         # Environment:     
-            # Python 3.11.5
-            # Pandas 2.2.2
-            # Scikit-learn 1.5.0
+            # Python 3.10.8   
+            # Pandas 2.0.3
+            # Scikit-learn 1.4.2
 
 import pandas as pd     # Importing pandas for data manipulation
 from sqlalchemy import create_engine

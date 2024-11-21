@@ -3,7 +3,6 @@
     # Developer details: 
         # Name: Harshita Jangde and Prachi Tavse
         # Role: Architects
-        # Code ownership rights: Mohini T and Vansh R
     # Version:
         # Version: V 1.0 (20 September 2024)
             # Developers: Harshita Jangde and Prachi Tavse
@@ -16,8 +15,8 @@
 
     # Dependency: 
         # Environment:     
-            # Python 3.11.5
-            # Streamlit 1.36.0
+            # Python 3.10.8
+            # Streamlit 1.22.0
             
 # Import necessary libraries
 import pandas as pd

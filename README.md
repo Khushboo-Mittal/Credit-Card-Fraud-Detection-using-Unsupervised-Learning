@@ -1,5 +1,30 @@
-## DIY - Unsupervised Learning
+# DIY - Unsupervised Learning
 This is the Unsupervised Learning Algorithms branch.
+
+## Table of Contents
+
+1. [DIY - Unsupervised Learning](#diy---unsupervised-learning)
+2. [Unsupervised Learning Algorithms](#unsupervised-learning-algorithms)
+   - [Isolation Forest](#isolation-forest)
+   - [Local Outlier Factor (LOF)](#local-outlier-factor-lof)
+   - [One-Class SVM](#one-class-svm)
+3. [Problem Definition](#problem-definition)
+4. [Mock Data Generation](#mock-data-generation)
+5. [Dataset Features](#dataset-features)
+6. [Data Definition](#data-definition)
+7. [Directory Structure](#directory-structure)
+   - [Data Splitting](#data-splitting)
+8. [Program Flow](#program-flow)
+   - [db_utils](#db_utils)
+   - [Data Ingestion](#data-ingestion)
+   - [Data Preprocessing](#data-preprocessing)
+   - [Data Splitting](#data-splitting)
+   - [Model Training](#model-training)
+   - [Model Evaluation](#model-evaluation)
+   - [Model Prediction](#model-prediction)
+   - [Web Application](#web-application)
+9. [Steps to Run](#steps-to-run)
+
 
 ## Unsupervised Learning Algorithms
 ### Isolation Forest
@@ -14,8 +39,29 @@ One-Class SVM is an anomaly detection technique designed for situations where on
 ## Problem Definition
 The business operates in the financial sector, offering credit card services to its customers. The goal is to use the Unsupervised Learning Algorithm to detect fraudulent cards based on historical transaction data.
 
+## Mock Data Generation
+
+This repository contains a dataset generated using the [Mockaroo](https://mockaroo.com/) site, designed for educational and learning purposes. The dataset simulates financial transactions with various attributes, useful for practicing data analysis, machine learning, and fraud detection.
+
+## Dataset Features
+
+The dataset includes the following features related to financial transactions:
+
+- **transaction_id**: Unique identifier for each transaction.
+- **transaction_date**: Date when the transaction occurred (e.g., 23-04-2024).
+- **transaction_amount**: The amount of money involved in the transaction (e.g., 7277).
+- **merchant_category**: Category of the merchant where the transaction took place (e.g., Entertainment, Restaurant, Travel).
+- **card_type**: The type of card used for the transaction (e.g., Amex, Visa).
+- **transaction_location**: Location where the transaction occurred (e.g., Bengaluru, Jaipur).
+- **cardholder_age**: Age of the cardholder (e.g., 9, 65, 57).
+- **cardholder_gender**: Gender of the cardholder (e.g., Male, Female, Other).
+- **transaction_description**: A description of the transaction (e.g., "Fusce congue, diam id ornare imperdiet...").
+- **account_balance**: The balance available in the account at the time of the transaction (e.g., 31454, 96536).
+- **calendar_income**: The annual income of the cardholder (e.g., 159045, 50525, 148395).
+
+
 ## Data Definition
-Mock data for learning purposes with features: transaction_id, customer_id, transaction_date, transaction_amount, merchant_category, payment_method, transaction_location, account_age, num_transactions, fraud_label, transaction_time, transaction_type, device_used, and customer_country.
+Mock data for learning purposes with features: transaction_id, transaction_date, transaction_amount, merchant_category, card_type, transaction_location, cardholder_age, cardholder_gender, transaction_description, account_balance, calander_income.
 Note: The dataset consists of 1000 samples, which may lead to potential overfitting. This could adversely affect evaluation metrics such as the silhouette score and Davies-Bouldin index, as these metrics may not accurately reflect clustering quality in a small dataset. In real-life scenarios, larger and more diverse datasets would provide a more accurate representation of transaction behavior, leading to more reliable performance metrics for fraud detection models.
 
 ## Directory Structure
