@@ -3,51 +3,81 @@
 ## Business Case
 Credit card fraud continues to be a major issue in the financial sector, resulting in billions of dollars in losses annually. Traditional fraud detection systems often face challenges in identifying rare fraudulent transactions, as fraud cases are typically outliers in transaction data. With the surge in digital payments and the increasing volume of transactions, conventional methods struggle to keep pace. To address this, more advanced approaches are needed—ones that can detect anomalies in data without relying on labeled fraud cases. These solutions are particularly valuable in scenarios where only legitimate transaction data is available for training, enabling the detection of novel fraud patterns that have not been encountered before.
 
-## Project Overview
-This project demonstrates how to use unsupervised learning algorithms to detect fraudulent credit card transactions from historical transaction data. It leverages three key unsupervised learning techniques to identify anomalies that may indicate fraudulent behavior, without requiring labeled data. The project implements data ingestion, preprocessing, model training, evaluation, and prediction functionalities, using Python and various libraries for machine learning, database management, and web application development.
+# DIY Unsupervised Learning Prompts
 
-## Algorithms Used
-The following unsupervised learning models are utilized for fraud detection:
+## Introduction to Unsupervised Learning
 
-1. Isolation Forest
-- **Purpose:** Detect outliers in high-dimensional datasets.
-- **How it works:** Constructs an ensemble of decision trees that isolate anomalies by randomly selecting features and splitting the data.
-- **Output:** -1 for anomalies, 1 for normal transactions.
+1. What is unsupervised learning, and how does it differ from supervised learning?
+2. Explain the concept of clustering and its real-world applications.
+3. What are anomaly detection techniques in unsupervised learning, and why are they important?
 
-2. Local Outlier Factor (LOF)
-- **Purpose:** Identify localized anomalies by measuring the density deviation from neighbors.
-- **How it works:** Computes LOF scores to detect data points in lower-density regions, which are outliers.
-- **Output:** -1 for outliers, 1 for inliers.
+## Basics of Unsupervised Learning
 
-3. One-Class SVM
-- **Purpose:** Identify anomalies in datasets with only normal instances available for training.
-- **How it works:** Fits a hyperplane to separate normal data from the origin, classifying data points outside the boundary as anomalies.
-- **Output:** -1 for anomalies, 1 for normal points.
+1. What are the common types of unsupervised learning algorithms?
+2. Explain the concepts of clustering, dimensionality reduction, and anomaly detection.
+3. What are the key challenges in unsupervised learning compared to supervised learning?
 
+## Anomaly Detection Techniques
 
-## Task
-The primary task is to develop an unsupervised learning model to detect fraudulent credit card transactions based on historical transaction data. The goal is to identify anomalies or outliers in the transaction data that may represent fraudulent activity, without requiring any labeled data on fraud cases. This will be achieved through the application of unsupervised learning algorithms that can identify unusual patterns and flag potential fraud.
+1. What is anomaly detection, and how is it applied in real-world scenarios?
+2. How does Isolation Forest work for detecting anomalies?
+3. Explain the role of Local Outlier Factor in identifying outliers.
+4. How does One-Class SVM work for anomaly detection?
 
-## Key Concepts
-- **Anomaly Detection**: Identifying rare or unusual data points that deviate significantly from the norm, which could indicate fraud.
-- **Unsupervised Learning**: A machine learning approach that does not require labeled data, making it suitable for situations where only legitimate transactions are available.
-- **Outliers**: Data points that differ significantly from the rest of the data, often representing fraud in financial transaction data.
-- **Model Evaluation**: Assessing the performance of the model to ensure its ability to identify fraud effectively.
+## Evaluation of Unsupervised Models
 
-## Directory Structure
-- **Code/**: Scripts for ingestion, preprocessing, training, evaluation, and prediction.
-- **Data/**: Mock transaction data for training.
+1. How do you evaluate the performance of a clustering model?
+2. What are common metrics used to evaluate anomaly detection algorithms?
+3. Explain the concept of silhouette score in clustering evaluation.
+4. How can you use a confusion matrix for evaluating anomaly detection results?
 
-## Steps to Run
-1. **Install dependencies**:
-   `pip install -r requirements.txt`
-2. **Run the streamlit app**:
-    `streamlit run Code/app.py`
+## Isolation Forest  
 
-## Notes:
-- Refer to the README.md files in each folder for more detailed instructions on how to set up and run the specific algorithm.
-- Make sure to install the necessary dependencies listed in the requirements.txt file.
-- Ensure that PostgreSQL and MongoDB are set up correctly before running the scripts.
-- The goal of this project is to understand and implement unsupervised learning algorithms to detect fraudulent transactions and evaluate their performance.
+1. What is the underlying principle of Isolation Forest for anomaly detection?  
+2. Explain how Isolation Forest isolates anomalies using decision trees.    
+3. What are the key hyperparameters of Isolation Forest, and how do they affect its performance?   
+4. What are the advantages of using Isolation Forest over other anomaly detection techniques?  
+5. In what scenarios would Isolation Forest struggle to detect anomalies?  
+6. How do you interpret the anomaly score generated by Isolation Forest?   
 
+## Local Outlier Factor (LOF)  
 
+1. What is the mathematical foundation of Local Outlier Factor for anomaly detection?  
+2. Explain the concept of "local density" and how it is used in LOF.  
+3. How does LOF compare the density of a point to its neighbors to determine outliers?  
+4. What are the key hyperparameters of LOF, such as `n_neighbors`, and how do you tune them?  
+5. What are the strengths and limitations of LOF in detecting anomalies?  
+6. What are some strategies to scale LOF for large datasets?   
+
+## One-Class SVM  
+
+1. What is the theoretical basis of One-Class SVM in anomaly detection?  
+2. Explain the role of the kernel function in One-Class SVM and its impact on model performance.  
+3. How does One-Class SVM use a hyperplane to separate normal data from anomalies?   
+4. What are the strengths of One-Class SVM in handling non-linear anomaly detection problems?  
+5. What are the limitations of One-Class SVM, especially regarding large datasets?  
+6. How does One-Class SVM compare to Isolation Forest and LOF in performance and scalability?   
+
+## Comparative and Combined Use  
+
+1. How do Isolation Forest, LOF, and One-Class SVM differ in their approaches to anomaly detection?  
+2. What are the key scenarios where one algorithm outperforms the others?   
+3. How do the anomaly scores from each algorithm compare, and what insights can you gain from these differences?  
+4. Can Isolation Forest, LOF, and One-Class SVM handle real-time anomaly detection? If so, how?  
+5. How do these algorithms perform on imbalanced datasets with very few anomalies?  
+
+## Practical Applications and Case Studies
+
+1. How is unsupervised learning applied in fraud detection?
+2. Explain how anomaly detection is used in manufacturing quality control.
+3. Describe a case study where clustering provided valuable business insights.
+4. How can unsupervised learning be used in network security to identify threats?
+5. What are some challenges in deploying unsupervised learning models in practice?
+
+## Best Practices for Unsupervised Learning
+
+1. How do you choose the right algorithm for your unsupervised learning task?
+2. What are some tips for improving clustering or anomaly detection results?
+3. Explain the importance of domain knowledge in unsupervised learning projects.
+4. How do you handle the scalability challenges of unsupervised learning algorithms?
+5. What are common pitfalls to avoid when implementing unsupervised learning models?
