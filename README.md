@@ -24,6 +24,7 @@ This is the Unsupervised Learning Algorithms branch.
    - [Model Prediction](#model-prediction)
    - [Web Application](#web-application)
 9. [Steps to Run](#steps-to-run)
+10. [Error Handling in the Streamlit App](#error-handling)
 
 
 ## Unsupervised Learning Algorithms
@@ -103,15 +104,14 @@ Note: The dataset consists of 1000 samples, which may lead to potential overfitt
      ### PostgreSQL Setup (CLI)
       1. FOR WINDOWS:
       Install PostgreSQL
-      - Download the installer for PostgreSQL from the official website:  
-      [PostgreSQL Downloads](https://www.postgresql.org/download/windows/)
+      - Download the installer for PostgreSQL from the official website:[PostgreSQL Downloads](https://www.postgresql.org/download/windows/)
       - Run the installer and follow the on-screen instructions.
       FOR MACOS:
       - Install PostgreSQL using Homebrew:
       `brew update`
       `brew install postgresql`
       2. Start PostgreSQL
-      - After installation, PostgreSQL should start automatically. If it doesn't, you can manually start the service using the "pgAdmin" tool or the command prompt: `net start postgresql-x64-13`
+      - After installation, PostgreSQL should start automatically. If it doesn't, you can manually start the service by using the command prompt: `net start postgresql-x64-13`
       (FOR MACOS: `brew services start postgresql`)
       3. Access PostgreSQL Command Line
       Open Command Prompt as an administrator.
@@ -139,3 +139,9 @@ Note: The dataset consists of 1000 samples, which may lead to potential overfitt
 2. **Install the necessary packages:** `pip install -r requirements.txt`
 
 3.	**Run the Streamlit web application:** `streamlit run Code/app.py`
+
+## Error Handling in the Streamlit App
+When running the Streamlit app, the application will check for required files before processing any data. If any of these files are missing, the app will display an error message. For example:
+1. If the X_test file is not found, an error like "X_test file not found" will be shown.
+2. If the model file is missing, you will see an error message like "Model not found".
+To resolve these errors, the user needs to click on the Train Model button. This step ensures that all necessary files are created, and the error messages will no longer appear.

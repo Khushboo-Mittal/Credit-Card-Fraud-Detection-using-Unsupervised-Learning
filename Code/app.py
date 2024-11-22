@@ -79,13 +79,13 @@ if "master_data_path" not in st.session_state:
     st.session_state.master_data_path = "Data/Master/Mock_data.csv"
     
 if "isolation_forest_path" not in st.session_state:
-    st.session_state.isolation_forest_path = "isolation_forest_model.pkl"
+    st.session_state.isolation_forest_path = "Models/isolation_forest_model.pkl"
     
 if "local_outlier_factor_path" not in st.session_state:
-    st.session_state.local_outlier_factor_model_path = "local_outlier_factor_model.pkl"
+    st.session_state.local_outlier_factor_model_path = "Models/local_outlier_factor_model.pkl"
     
 if "oneclass_svm_path" not in st.session_state:
-    st.session_state.oneclass_svm_path = "oneclass_svm_model.pkl"
+    st.session_state.oneclass_svm_path = "Models/oneclass_svm_model.pkl"
 
 # Creating tabs for the web app.
 tab1, tab2, tab3, tab4 = st.tabs(["Model Config","Model Training","Model Evaluation", "Model Prediction"])
