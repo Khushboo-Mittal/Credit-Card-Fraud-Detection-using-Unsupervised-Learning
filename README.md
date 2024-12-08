@@ -1,5 +1,5 @@
 # Credit Card Fraud Detection Using Unsupervised Learning Algorithms
-This project leverages unsupervised learning algorithms (Isolation Forest, LOF, One-Class SVM) to detect fraudulent credit card transactions. By analyzing transaction features such as amount, location, and merchant category, it identifies anomalies, providing an efficient solution for fraud detection without requiring labeled data.
+This project leverages unsupervised learning algorithms (Isolation Forest, LOF, One-Class SVM) for outlier detection to identify fraudulent credit card transactions. By analyzing transaction features such as amount, location, and merchant category, it detects anomalies, providing an efficient solution for fraud detection without requiring labeled data.
 
 ## Table of Contents
 
